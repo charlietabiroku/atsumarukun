@@ -1,0 +1,79 @@
+{
+  "common": {
+    "language": "言語",
+    "catchcopy": "集まる日、すぐ決まる。",
+    "yourName": "あなたの名前",
+    "localeNames": {
+      "ja": "日本語",
+      "zh": "中文",
+      "en": "English",
+      "ko": "한국어"
+    }
+  },
+  "top": {
+    "headline": "日程調整を、もっと軽く。",
+    "subcopy": "ログイン不要。大きなボタンで、候補日が多くても迷わず回答できます。",
+    "cta": "イベントを作成",
+    "points": {
+      "languagesTitle": "4言語に対応",
+      "languagesBody": "日本語・中国語・英語・韓国語に自動対応。",
+      "mobileTitle": "スマホで使いやすい",
+      "mobileBody": "片手で押しやすい大きなボタン設計です。",
+      "noLoginTitle": "ログイン不要",
+      "noLoginBody": "URLを開くだけで、そのまま回答できます。"
+    }
+  },
+  "create": {
+    "back": "戻る",
+    "headline": "イベントを作成",
+    "subcopy": "必要なのはイベント名と候補日時だけ。すぐ共有できます。",
+    "title": "イベント名",
+    "titlePlaceholder": "例）飲み会、打ち合わせ、送別会",
+    "description": "説明",
+    "descriptionPlaceholder": "補足があれば入力してください",
+    "candidateDates": "候補日時",
+    "addCandidate": "候補日時を追加",
+    "removeCandidate": "候補日時を削除",
+    "submit": "作成する",
+    "creating": "作成中...",
+    "errors": {
+      "required": "イベント名と候補日時を入力してください。",
+      "failed": "イベントを作成できませんでした。"
+    }
+  },
+  "share": {
+    "headline": "イベントを作成しました",
+    "subcopy": "このURLをそのまま送れば、すぐ回答してもらえます。",
+    "eventUrl": "イベントURL",
+    "copy": "URLをコピー",
+    "copied": "コピーしました",
+    "qrCode": "QRコード",
+    "viewResults": "結果を見る"
+  },
+  "response": {
+    "headline": "回答画面",
+    "namePlaceholder": "例）山田太郎",
+    "allAvailable": "全日程参加",
+    "chooseIndividually": "個別に選択",
+    "allUnavailable": "全日程不参加",
+    "available": "参加",
+    "maybe": "未定",
+    "unavailable": "不参加",
+    "submit": "回答する",
+    "submitting": "送信中...",
+    "errors": {
+      "failed": "回答を送信できませんでした。"
+    }
+  },
+  "results": {
+    "headline": "結果",
+    "bestCandidate": "最有力候補",
+    "responsesSummary": "{total}人中 {available}人が参加",
+    "addToCalendar": "カレンダーに追加",
+    "available": "参加",
+    "maybe": "未定",
+    "unavailable": "不参加",
+    "score": "スコア {score}",
+    "appleCalendar": "Apple / ICS"
+  }
+}

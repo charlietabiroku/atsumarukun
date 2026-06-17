@@ -1,0 +1,79 @@
+{
+  "common": {
+    "language": "语言",
+    "catchcopy": "聚会日期，很快决定。",
+    "yourName": "你的名字",
+    "localeNames": {
+      "ja": "日本語",
+      "zh": "中文",
+      "en": "English",
+      "ko": "한국어"
+    }
+  },
+  "top": {
+    "headline": "让日程协调更轻松。",
+    "subcopy": "无需登录。按钮大，候选日期再多也能轻松回答。",
+    "cta": "创建活动",
+    "points": {
+      "languagesTitle": "支持4种语言",
+      "languagesBody": "自动支持日语、中文、英语、韩语。",
+      "mobileTitle": "手机上更顺手",
+      "mobileBody": "大按钮设计，单手也容易操作。",
+      "noLoginTitle": "无需登录",
+      "noLoginBody": "打开链接后即可直接回答。"
+    }
+  },
+  "create": {
+    "back": "返回",
+    "headline": "创建活动",
+    "subcopy": "只要输入活动名和候选时间，就能马上分享。",
+    "title": "活动名称",
+    "titlePlaceholder": "例如：聚餐、会议、庆功会",
+    "description": "说明",
+    "descriptionPlaceholder": "如有补充请填写",
+    "candidateDates": "候选日期时间",
+    "addCandidate": "添加候选日期时间",
+    "removeCandidate": "删除候选日期时间",
+    "submit": "创建",
+    "creating": "创建中...",
+    "errors": {
+      "required": "请输入活动名称和候选日期时间。",
+      "failed": "创建活动失败。"
+    }
+  },
+  "share": {
+    "headline": "活动已创建",
+    "subcopy": "把这个链接发出去，对方就能马上回答。",
+    "eventUrl": "活动链接",
+    "copy": "复制链接",
+    "copied": "已复制",
+    "qrCode": "二维码",
+    "viewResults": "查看结果"
+  },
+  "response": {
+    "headline": "回答",
+    "namePlaceholder": "例如：张三",
+    "allAvailable": "全部都能参加",
+    "chooseIndividually": "分别选择",
+    "allUnavailable": "全部都不能参加",
+    "available": "参加",
+    "maybe": "待定",
+    "unavailable": "不参加",
+    "submit": "提交回答",
+    "submitting": "提交中...",
+    "errors": {
+      "failed": "无法提交回答。"
+    }
+  },
+  "results": {
+    "headline": "结果",
+    "bestCandidate": "最佳候选",
+    "responsesSummary": "{total}人中有 {available} 人参加",
+    "addToCalendar": "添加到日历",
+    "available": "参加",
+    "maybe": "待定",
+    "unavailable": "不参加",
+    "score": "分数 {score}",
+    "appleCalendar": "Apple / ICS"
+  }
+}

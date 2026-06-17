@@ -1,0 +1,79 @@
+{
+  "common": {
+    "language": "언어",
+    "catchcopy": "모이는 날, 바로 정해져요.",
+    "yourName": "이름",
+    "localeNames": {
+      "ja": "日本語",
+      "zh": "中文",
+      "en": "English",
+      "ko": "한국어"
+    }
+  },
+  "top": {
+    "headline": "모바일에 딱 맞는 간단한 일정 조율.",
+    "subcopy": "로그인 없이 큰 버튼으로, 후보 일정이 많아도 쉽게 답할 수 있어요.",
+    "cta": "이벤트 만들기",
+    "points": {
+      "languagesTitle": "4개 언어 지원",
+      "languagesBody": "일본어, 중국어, 영어, 한국어를 자동으로 지원합니다.",
+      "mobileTitle": "모바일에 최적화",
+      "mobileBody": "한 손으로 누르기 쉬운 큰 버튼 중심으로 만들었어요.",
+      "noLoginTitle": "로그인 불필요",
+      "noLoginBody": "링크만 열면 바로 답변할 수 있어요."
+    }
+  },
+  "create": {
+    "back": "뒤로",
+    "headline": "이벤트 만들기",
+    "subcopy": "이벤트 이름과 후보 일정만 넣으면 바로 공유할 수 있어요.",
+    "title": "이벤트 이름",
+    "titlePlaceholder": "예) 회식, 미팅, 송별회",
+    "description": "설명",
+    "descriptionPlaceholder": "필요하면 짧게 적어 주세요",
+    "candidateDates": "후보 일정",
+    "addCandidate": "후보 일정 추가",
+    "removeCandidate": "후보 일정 삭제",
+    "submit": "만들기",
+    "creating": "만드는 중...",
+    "errors": {
+      "required": "이벤트 이름과 후보 일정을 입력해 주세요.",
+      "failed": "이벤트를 만들지 못했습니다."
+    }
+  },
+  "share": {
+    "headline": "이벤트가 만들어졌어요",
+    "subcopy": "이 링크를 보내면 바로 답변을 받을 수 있어요.",
+    "eventUrl": "이벤트 URL",
+    "copy": "URL 복사",
+    "copied": "복사됨",
+    "qrCode": "QR 코드",
+    "viewResults": "결과 보기"
+  },
+  "response": {
+    "headline": "응답",
+    "namePlaceholder": "예) 홍길동",
+    "allAvailable": "전 일정 참석",
+    "chooseIndividually": "개별 선택",
+    "allUnavailable": "전 일정 불참",
+    "available": "참석",
+    "maybe": "미정",
+    "unavailable": "불참",
+    "submit": "응답하기",
+    "submitting": "보내는 중...",
+    "errors": {
+      "failed": "응답을 보낼 수 없습니다."
+    }
+  },
+  "results": {
+    "headline": "결과",
+    "bestCandidate": "가장 유력한 일정",
+    "responsesSummary": "{total}명 중 {available}명 참석",
+    "addToCalendar": "캘린더에 추가",
+    "available": "참석",
+    "maybe": "미정",
+    "unavailable": "불참",
+    "score": "점수 {score}",
+    "appleCalendar": "Apple / ICS"
+  }
+}

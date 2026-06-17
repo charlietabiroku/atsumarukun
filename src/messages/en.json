@@ -1,0 +1,79 @@
+{
+  "common": {
+    "language": "Language",
+    "catchcopy": "Pick the day fast.",
+    "yourName": "Your name",
+    "localeNames": {
+      "ja": "日本語",
+      "zh": "中文",
+      "en": "English",
+      "ko": "한국어"
+    }
+  },
+  "top": {
+    "headline": "Simple scheduling, built for phones.",
+    "subcopy": "No login. Big buttons. Easy answers even when there are many candidate dates.",
+    "cta": "Create Event",
+    "points": {
+      "languagesTitle": "4 languages ready",
+      "languagesBody": "Automatically supports Japanese, Chinese, English and Korean.",
+      "mobileTitle": "Easy on mobile",
+      "mobileBody": "Large buttons make one-handed use feel natural.",
+      "noLoginTitle": "No login needed",
+      "noLoginBody": "Just open the link and answer right away."
+    }
+  },
+  "create": {
+    "back": "Back",
+    "headline": "Create event",
+    "subcopy": "Just add a title and candidate dates, then share it right away.",
+    "title": "Event title",
+    "titlePlaceholder": "Ex. Team dinner, planning meeting",
+    "description": "Description",
+    "descriptionPlaceholder": "Add a short note if needed",
+    "candidateDates": "Candidate dates",
+    "addCandidate": "Add candidate date",
+    "removeCandidate": "Remove candidate date",
+    "submit": "Create",
+    "creating": "Creating...",
+    "errors": {
+      "required": "Enter an event title and at least one candidate date.",
+      "failed": "Could not create the event."
+    }
+  },
+  "share": {
+    "headline": "Event created",
+    "subcopy": "Share this link and people can reply right away.",
+    "eventUrl": "Event URL",
+    "copy": "Copy URL",
+    "copied": "Copied",
+    "qrCode": "QR code",
+    "viewResults": "View results"
+  },
+  "response": {
+    "headline": "Reply",
+    "namePlaceholder": "Ex. Alex",
+    "allAvailable": "Available for all",
+    "chooseIndividually": "Choose individually",
+    "allUnavailable": "Unavailable for all",
+    "available": "Available",
+    "maybe": "Maybe",
+    "unavailable": "Unavailable",
+    "submit": "Submit reply",
+    "submitting": "Submitting...",
+    "errors": {
+      "failed": "Could not submit your reply."
+    }
+  },
+  "results": {
+    "headline": "Results",
+    "bestCandidate": "Best candidate",
+    "responsesSummary": "{available} available out of {total}",
+    "addToCalendar": "Add to calendar",
+    "available": "Available",
+    "maybe": "Maybe",
+    "unavailable": "Unavailable",
+    "score": "Score {score}",
+    "appleCalendar": "Apple / ICS"
+  }
+}

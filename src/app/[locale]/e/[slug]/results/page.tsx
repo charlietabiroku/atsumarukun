@@ -1,0 +1,67 @@
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+
+import { LanguageSwitcher } from "@/components/branding/language-switcher";
+import { AddToCalendarButtons } from "@/components/results/add-to-calendar-buttons";
+import { BestDateCard } from "@/components/results/best-date-card";
+import { ResultsList } from "@/components/results/results-list";
+import { Card } from "@/components/ui/card";
+import { getEventResultsBySlug } from "@/lib/db/queries";
+
+export default async function ResultsPage({
+  params,
+}: {
+  params: Promise<{ locale: "ja" | "zh" | "en" | "ko"; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("results");
+  const payload = await getEventResultsBySlug(slug);
+
+  if (!payload) {
+    notFound();
+  }
+
+  return (
+    <main className="page-shell flex-1">
+      <div className="mx-auto flex min-h-svh w-full max-w-3xl flex-col px-4 py-5 sm:px-6 sm:py-8">
+        <div className="mb-5 flex justify-end">
+          <LanguageSwitcher />
+        </div>
+
+        <div className="mx-auto w-full max-w-2xl space-y-4">
+          <Card className="p-5 sm:p-7">
+            <p className="text-sm font-semibold text-primary">{t("headline")}</p>
+            <h1 className="mt-2 text-3xl font-extrabold">{payload.event.title}</h1>
+            {payload.event.description ? (
+              <p className="mt-2 text-sm leading-6 text-foreground/65">
+                {payload.event.description}
+              </p>
+            ) : null}
+          </Card>
+
+          <BestDateCard
+            bestCandidate={payload.bestCandidate}
+            locale={locale}
+            totalResponses={payload.totalResponses}
+          />
+
+          {payload.bestCandidate ? (
+            <Card className="p-5">
+              <p className="mb-4 text-sm font-semibold text-foreground/60">
+                {t("addToCalendar")}
+              </p>
+              <AddToCalendarButtons
+                title={payload.event.title}
+                description={payload.event.description}
+                start={payload.bestCandidate.candidateDate}
+              />
+            </Card>
+          ) : null}
+
+          <ResultsList results={payload.results} locale={locale} />
+        </div>
+      </div>
+    </main>
+  );
+}
