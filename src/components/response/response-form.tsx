@@ -1,6 +1,4 @@
 "use client";
-
-import { Check, CircleSlash, TriangleAlert } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -14,22 +12,22 @@ import { useRouter } from "@/lib/i18n/navigation";
 
 const statusTheme: Record<
   ResponseStatus,
-  { labelKey: "available" | "maybe" | "unavailable"; className: string; icon: React.ReactNode }
+  { labelKey: "available" | "maybe" | "unavailable"; className: string; symbol: string }
 > = {
   available: {
     labelKey: "available",
     className: "border-primary bg-[#f1fff5] text-primary",
-    icon: <Check className="size-4" />,
+    symbol: "◯",
   },
   maybe: {
     labelKey: "maybe",
     className: "border-warning bg-[#fff9ea] text-[#c48800]",
-    icon: <TriangleAlert className="size-4" />,
+    symbol: "△",
   },
   unavailable: {
     labelKey: "unavailable",
     className: "border-[#ffd7d4] bg-[#fff5f4] text-danger",
-    icon: <CircleSlash className="size-4" />,
+    symbol: "×",
   },
 };
 
@@ -139,6 +137,7 @@ export function ResponseForm({ event }: { event: EventDetail }) {
                     <button
                       key={status}
                       type="button"
+                      aria-label={t(statusTheme[status].labelKey)}
                       className={`flex h-11 min-w-11 items-center justify-center rounded-full border px-3 text-xs font-semibold transition ${
                         active
                           ? statusTheme[status].className
@@ -151,7 +150,9 @@ export function ResponseForm({ event }: { event: EventDetail }) {
                         }))
                       }
                     >
-                      {statusTheme[status].icon}
+                      <span className="text-base leading-none">
+                        {statusTheme[status].symbol}
+                      </span>
                     </button>
                   );
                 })}

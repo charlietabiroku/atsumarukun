@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { MAX_CANDIDATE_DATES } from "@/lib/constants/events";
+
 export const createResponseSchema = z.object({
   name: z.string().trim().min(1).max(60),
   items: z
@@ -10,5 +12,5 @@ export const createResponseSchema = z.object({
       }),
     )
     .min(1)
-    .max(20),
+    .max(MAX_CANDIDATE_DATES),
 });
