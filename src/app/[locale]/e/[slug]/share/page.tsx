@@ -4,9 +4,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/branding/language-switcher";
 import { QrCodeCard } from "@/components/event/qr-code-card";
 import { ShareCard } from "@/components/event/share-card";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getEventBySlug } from "@/lib/db/queries";
-import { buildAbsoluteUrl, buildEventUrl } from "@/lib/utils";
+import { Link } from "@/lib/i18n/navigation";
+import { buildAbsoluteUrl, buildEventUrl, cn } from "@/lib/utils";
 
 export default async function SharePage({
   params,
@@ -37,6 +39,12 @@ export default async function SharePage({
             <p className="text-sm font-semibold text-primary">{t("headline")}</p>
             <h1 className="mt-2 text-3xl font-extrabold">{event.title}</h1>
             <p className="mt-2 text-sm leading-6 text-foreground/65">{t("subcopy")}</p>
+            <Link
+              href={`/e/${slug}/edit`}
+              className={cn(buttonVariants({ variant: "outline" }), "mt-5 flex w-full")}
+            >
+              {t("editEvent")}
+            </Link>
           </Card>
           <ShareCard shareUrl={shareUrl} resultsUrl={resultsUrl} />
           <QrCodeCard value={shareUrl} />

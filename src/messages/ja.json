@@ -48,7 +48,26 @@
     "copy": "URLをコピー",
     "copied": "コピーしました",
     "qrCode": "QRコード",
-    "viewResults": "結果を見る"
+    "viewResults": "結果を見る",
+    "editEvent": "イベントを編集"
+  },
+  "edit": {
+    "back": "共有画面へ戻る",
+    "headline": "イベントを編集",
+    "subcopy": "間違えた候補日時は削除し、必要なら新しい候補日時を追加できます。",
+    "title": "イベント名",
+    "titlePlaceholder": "例）飲み会、打ち合わせ、送別会",
+    "description": "説明",
+    "descriptionPlaceholder": "補足があれば入力してください",
+    "candidateDates": "候補日時",
+    "addCandidate": "候補日時を追加",
+    "removeCandidate": "候補日時を削除",
+    "submit": "更新する",
+    "creating": "更新中...",
+    "errors": {
+      "required": "イベント名と候補日時を入力してください。",
+      "failed": "イベントを更新できませんでした。"
+    }
   },
   "response": {
     "headline": "回答画面",

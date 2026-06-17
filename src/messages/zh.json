@@ -48,7 +48,26 @@
     "copy": "复制链接",
     "copied": "已复制",
     "qrCode": "二维码",
-    "viewResults": "查看结果"
+    "viewResults": "查看结果",
+    "editEvent": "编辑活动"
+  },
+  "edit": {
+    "back": "返回分享页面",
+    "headline": "编辑活动",
+    "subcopy": "可删除填错的候选时间，也可以追加新的候选时间。",
+    "title": "活动名称",
+    "titlePlaceholder": "例如：聚餐、会议、庆功会",
+    "description": "说明",
+    "descriptionPlaceholder": "如有补充请填写",
+    "candidateDates": "候选日期时间",
+    "addCandidate": "添加候选日期时间",
+    "removeCandidate": "删除候选日期时间",
+    "submit": "保存修改",
+    "creating": "保存中...",
+    "errors": {
+      "required": "请输入活动名称和至少一个候选日期时间。",
+      "failed": "更新活动失败。"
+    }
   },
   "response": {
     "headline": "回答",

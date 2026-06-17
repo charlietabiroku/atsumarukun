@@ -48,7 +48,26 @@
     "copy": "Copy URL",
     "copied": "Copied",
     "qrCode": "QR code",
-    "viewResults": "View results"
+    "viewResults": "View results",
+    "editEvent": "Edit event"
+  },
+  "edit": {
+    "back": "Back to sharing",
+    "headline": "Edit event",
+    "subcopy": "Remove mistaken dates and add new candidate dates whenever needed.",
+    "title": "Event title",
+    "titlePlaceholder": "Ex. Team dinner, planning meeting",
+    "description": "Description",
+    "descriptionPlaceholder": "Add a short note if needed",
+    "candidateDates": "Candidate dates",
+    "addCandidate": "Add candidate date",
+    "removeCandidate": "Remove candidate date",
+    "submit": "Save changes",
+    "creating": "Saving...",
+    "errors": {
+      "required": "Enter an event title and at least one candidate date.",
+      "failed": "Could not update the event."
+    }
   },
   "response": {
     "headline": "Reply",

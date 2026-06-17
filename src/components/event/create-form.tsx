@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/lib/i18n/navigation";
+import { EventDetail } from "@/types/event";
 
 type CandidateRow = {
   id: string;
@@ -22,21 +23,66 @@ function emptyCandidate() {
   };
 }
 
-export function CreateForm() {
-  const t = useTranslations("create");
+function toDateTimeLocalValue(date: string) {
+  const value = new Date(date);
+  const year = value.getFullYear();
+  const month = `${value.getMonth() + 1}`.padStart(2, "0");
+  const day = `${value.getDate()}`.padStart(2, "0");
+  const hours = `${value.getHours()}`.padStart(2, "0");
+  const minutes = `${value.getMinutes()}`.padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function createInitialCandidates(event?: EventDetail) {
+  if (!event) {
+    return [emptyCandidate(), emptyCandidate()];
+  }
+
+  const rows = event.candidateDates.map((candidate) => ({
+    id: candidate.id,
+    value: toDateTimeLocalValue(candidate.candidateDate),
+  }));
+
+  return rows.length > 0 ? rows : [emptyCandidate()];
+}
+
+type CreateFormProps = {
+  event?: EventDetail;
+  mode?: "create" | "edit";
+};
+
+export function CreateForm({
+  event: initialEvent,
+  mode = "create",
+}: CreateFormProps) {
+  const t = useTranslations(mode);
   const locale = useLocale();
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [candidates, setCandidates] = useState<CandidateRow[]>([
-    emptyCandidate(),
-    emptyCandidate(),
-  ]);
+  const [title, setTitle] = useState(initialEvent?.title ?? "");
+  const [description, setDescription] = useState(initialEvent?.description ?? "");
+  const [candidates, setCandidates] = useState<CandidateRow[]>(
+    createInitialCandidates(initialEvent),
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function addCandidate() {
+    setCandidates((current) => [...current, emptyCandidate()]);
+  }
+
+  function removeCandidate(id: string) {
+    setCandidates((current) => {
+      if (current.length === 1) {
+        return [{ ...current[0], value: "" }];
+      }
+
+      return current.filter((item) => item.id !== id);
+    });
+  }
+
+  async function onSubmit(formEvent: React.FormEvent<HTMLFormElement>) {
+    formEvent.preventDefault();
     setError("");
 
     const candidateDates = candidates
@@ -52,8 +98,13 @@ export function CreateForm() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/events", {
-        method: "POST",
+      const endpoint = mode === "edit" && initialEvent?.id
+        ? `/api/events/${initialEvent.id}`
+        : "/api/events";
+      const method = mode === "edit" ? "PATCH" : "POST";
+
+      const response = await fetch(endpoint, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -69,6 +120,12 @@ export function CreateForm() {
 
       if (!response.ok) {
         throw new Error(data.message || t("errors.failed"));
+      }
+
+      if (mode === "edit") {
+        router.push(`/e/${data.slug}/share`);
+        router.refresh();
+        return;
       }
 
       router.push(`/e/${data.slug}/share`);
@@ -124,11 +181,7 @@ export function CreateForm() {
                 size="icon"
                 variant="outline"
                 aria-label={`${t("removeCandidate")} ${index + 1}`}
-                onClick={() =>
-                  setCandidates((current) =>
-                    current.filter((item) => item.id !== candidate.id),
-                  )
-                }
+                onClick={() => removeCandidate(candidate.id)}
               >
                 <Minus className="size-4" />
               </Button>
@@ -139,9 +192,7 @@ export function CreateForm() {
           type="button"
           variant="outline"
           className="w-full justify-center"
-          onClick={() =>
-            setCandidates((current) => [...current, emptyCandidate()])
-          }
+          onClick={addCandidate}
         >
           <Plus className="mr-2 size-4" />
           {t("addCandidate")}

@@ -11,6 +11,14 @@ type CreateEventInput = {
   candidateDates: string[];
 };
 
+type UpdateEventInput = {
+  id: string;
+  title: string;
+  description: string;
+  language: "ja" | "zh" | "en" | "ko";
+  candidateDates: string[];
+};
+
 type CreateResponseInput = {
   eventId: string;
   name: string;
@@ -121,6 +129,81 @@ export async function getEventBySlug(slug: string) {
   }
 
   return mapEventDetail(event, dates || []);
+}
+
+export async function updateEvent(input: UpdateEventInput) {
+  const supabase = createSupabaseServerClient();
+
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .update({
+      title: input.title,
+      description: input.description || null,
+      language: input.language,
+    })
+    .eq("id", input.id)
+    .select("*")
+    .single<EventRecord>();
+
+  if (eventError || !event) {
+    throw new Error(eventError?.message || "Failed to update event");
+  }
+
+  const { data: existingDates, error: existingDatesError } = await supabase
+    .from("event_dates")
+    .select("id, candidate_date")
+    .eq("event_id", input.id);
+
+  if (existingDatesError) {
+    throw new Error(existingDatesError.message);
+  }
+
+  const currentDates = existingDates || [];
+  const nextDateSet = new Set(input.candidateDates);
+
+  const removedDateIds = currentDates
+    .filter((item) => !nextDateSet.has(item.candidate_date))
+    .map((item) => item.id);
+
+  if (removedDateIds.length > 0) {
+    const { error: responseItemsError } = await supabase
+      .from("response_items")
+      .delete()
+      .in("event_date_id", removedDateIds);
+
+    if (responseItemsError) {
+      throw new Error(responseItemsError.message);
+    }
+
+    const { error: removeDatesError } = await supabase
+      .from("event_dates")
+      .delete()
+      .in("id", removedDateIds);
+
+    if (removeDatesError) {
+      throw new Error(removeDatesError.message);
+    }
+  }
+
+  const currentDateSet = new Set(currentDates.map((item) => item.candidate_date));
+  const addedDates = input.candidateDates.filter((candidateDate) => {
+    return !currentDateSet.has(candidateDate);
+  });
+
+  if (addedDates.length > 0) {
+    const { error: addDatesError } = await supabase.from("event_dates").insert(
+      addedDates.map((candidateDate) => ({
+        event_id: input.id,
+        candidate_date: candidateDate,
+      })),
+    );
+
+    if (addDatesError) {
+      throw new Error(addDatesError.message);
+    }
+  }
+
+  return event;
 }
 
 export async function createResponse(input: CreateResponseInput) {
