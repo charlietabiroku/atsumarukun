@@ -86,13 +86,22 @@
   },
   "results": {
     "headline": "Results",
-    "bestCandidate": "Best candidate",
+    "bestCandidate": "Best Date",
+    "responseRate": "Response Rate",
+    "copyResults": "Copy Results",
+    "copiedResults": "Copied",
+    "responseTable": "Response Table",
+    "responseTableHint": "Tap a respondent name to edit that reply.",
+    "date": "Date",
     "responsesSummary": "{available} available out of {total}",
     "addToCalendar": "Add to calendar",
     "available": "Available",
     "maybe": "Maybe",
     "unavailable": "Unavailable",
     "score": "Score {score}",
-    "appleCalendar": "Apple / ICS"
+    "appleCalendar": "Apple / ICS",
+    "peopleSuffix": "",
+    "copyTitle": "[Atsumarukun Results]",
+    "bestCandidateCopy": "This is the best date."
   }
 }

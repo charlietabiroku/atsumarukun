@@ -87,12 +87,21 @@
   "results": {
     "headline": "結果",
     "bestCandidate": "最有力候補",
+    "responseRate": "回答率",
+    "copyResults": "結果をコピー",
+    "copiedResults": "コピーしました",
+    "responseTable": "回答一覧",
+    "responseTableHint": "回答者名を押すと、その回答を編集できます。",
+    "date": "日程",
     "responsesSummary": "{total}人中 {available}人が参加",
     "addToCalendar": "カレンダーに追加",
     "available": "参加",
     "maybe": "未定",
     "unavailable": "不参加",
     "score": "スコア {score}",
-    "appleCalendar": "Apple / ICS"
+    "appleCalendar": "Apple / ICS",
+    "peopleSuffix": "人",
+    "copyTitle": "【集丸くん結果】",
+    "bestCandidateCopy": "最有力候補です。"
   }
 }

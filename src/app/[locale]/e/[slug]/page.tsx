@@ -4,14 +4,17 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/branding/language-switcher";
 import { ResponseForm } from "@/components/response/response-form";
 import { Card } from "@/components/ui/card";
-import { getEventBySlug } from "@/lib/db/queries";
+import { getEventBySlug, getResponseByIdForEvent } from "@/lib/db/queries";
 
 export default async function EventPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: "ja" | "zh" | "en" | "ko"; slug: string }>;
+  searchParams: Promise<{ responseId?: string }>;
 }) {
   const { locale, slug } = await params;
+  const { responseId } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("response");
   const event = await getEventBySlug(slug);
@@ -19,6 +22,10 @@ export default async function EventPage({
   if (!event) {
     notFound();
   }
+
+  const initialResponse = responseId
+    ? await getResponseByIdForEvent(event.id, responseId)
+    : null;
 
   return (
     <main className="page-shell flex-1">
@@ -35,7 +42,7 @@ export default async function EventPage({
               <p className="text-sm leading-6 text-foreground/65">{event.description}</p>
             ) : null}
           </div>
-          <ResponseForm event={event} />
+          <ResponseForm event={event} initialResponse={initialResponse} />
         </Card>
       </div>
     </main>

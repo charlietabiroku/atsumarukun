@@ -4,12 +4,13 @@ import { Minus, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { CandidateDateText } from "@/components/date/candidate-date-text";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/lib/i18n/navigation";
-import { toCandidateDateIso, toDateTimeLocalInput } from "@/lib/utils";
+import { getWeekdayAccentClass, toCandidateDateIso, toDateTimeLocalInput } from "@/lib/utils";
 import { EventDetail } from "@/types/event";
 
 type CandidateRow = {
@@ -152,19 +153,33 @@ export function CreateForm({
         <Label>{t("candidateDates")}</Label>
         {candidates.map((candidate, index) => (
           <div key={candidate.id} className="flex items-center gap-3">
-            <Input
-              type="datetime-local"
-              value={candidate.value}
-              onChange={(event) =>
-                setCandidates((current) =>
-                  current.map((item) =>
-                    item.id === candidate.id
-                      ? { ...item, value: event.target.value }
-                      : item,
-                  ),
-                )
-              }
-            />
+            <div className="flex-1 space-y-2">
+              <Input
+                type="datetime-local"
+                value={candidate.value}
+                onChange={(event) =>
+                  setCandidates((current) =>
+                    current.map((item) =>
+                      item.id === candidate.id
+                        ? { ...item, value: event.target.value }
+                        : item,
+                    ),
+                  )
+                }
+              />
+              {candidate.value ? (
+                <div
+                  className={`rounded-2xl border border-border/70 px-3 py-2 text-sm font-semibold text-foreground ${getWeekdayAccentClass(
+                    toCandidateDateIso(candidate.value),
+                  )}`}
+                >
+                  <CandidateDateText
+                    value={toCandidateDateIso(candidate.value)}
+                    locale={locale as "ja" | "zh" | "en" | "ko"}
+                  />
+                </div>
+              ) : null}
+            </div>
             {candidates.length > 1 ? (
               <Button
                 type="button"

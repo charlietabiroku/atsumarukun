@@ -22,3 +22,36 @@ export type EventDateResult = {
   unavailableCount: number;
   score: number;
 };
+
+export type ResponseWithItems = {
+  id: string;
+  name: string;
+  createdAt: string;
+  items: Array<{
+    eventDateId: string;
+    status: ResponseStatus;
+  }>;
+};
+
+export type EventResultsPayload = {
+  event: {
+    id: string;
+    slug: string;
+    title: string;
+    description: string | null;
+    language: "ja" | "zh" | "en" | "ko";
+  };
+  candidateDates: Array<{
+    id: string;
+    candidateDate: string;
+  }>;
+  bestCandidate: EventDateResult | null;
+  results: EventDateResult[];
+  responses: ResponseWithItems[];
+  totalResponses: number;
+  responseRate: {
+    answered: number;
+    total: number;
+    percentage: number;
+  };
+};

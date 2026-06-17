@@ -2,7 +2,14 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createEventSlug } from "@/lib/utils/slug";
 import { scoreStatus } from "@/lib/utils/scoring";
 import { EventDetail, EventRecord } from "@/types/event";
-import { EventDateResult, ResponseItemRecord, ResponseRecord } from "@/types/response";
+import {
+  EventDateResult,
+  EventResultsPayload,
+  ResponseItemRecord,
+  ResponseRecord,
+  ResponseStatus,
+  ResponseWithItems,
+} from "@/types/response";
 
 type CreateEventInput = {
   title: string;
@@ -21,10 +28,11 @@ type UpdateEventInput = {
 
 type CreateResponseInput = {
   eventId: string;
+  responseId?: string;
   name: string;
   items: Array<{
     eventDateId: string;
-    status: "available" | "maybe" | "unavailable";
+    status: ResponseStatus;
   }>;
 };
 
@@ -227,6 +235,55 @@ export async function createResponse(input: CreateResponseInput) {
     throw new Error("All event dates must be answered");
   }
 
+  if (input.responseId) {
+    const { data: existingResponse, error: existingResponseError } = await supabase
+      .from("responses")
+      .select("*")
+      .eq("id", input.responseId)
+      .eq("event_id", input.eventId)
+      .single<ResponseRecord>();
+
+    if (existingResponseError || !existingResponse) {
+      throw new Error(existingResponseError?.message || "Response not found");
+    }
+
+    const { data: updatedResponse, error: updateResponseError } = await supabase
+      .from("responses")
+      .update({
+        name: input.name,
+      })
+      .eq("id", input.responseId)
+      .select("*")
+      .single<ResponseRecord>();
+
+    if (updateResponseError || !updatedResponse) {
+      throw new Error(updateResponseError?.message || "Failed to update response");
+    }
+
+    const { error: removeItemsError } = await supabase
+      .from("response_items")
+      .delete()
+      .eq("response_id", input.responseId);
+
+    if (removeItemsError) {
+      throw new Error(removeItemsError.message);
+    }
+
+    const { error: insertItemsError } = await supabase.from("response_items").insert(
+      input.items.map((item) => ({
+        response_id: updatedResponse.id,
+        event_date_id: item.eventDateId,
+        status: item.status,
+      })),
+    );
+
+    if (insertItemsError) {
+      throw new Error(insertItemsError.message);
+    }
+
+    return updatedResponse;
+  }
+
   const { data: response, error: responseError } = await supabase
     .from("responses")
     .insert({
@@ -253,6 +310,40 @@ export async function createResponse(input: CreateResponseInput) {
   }
 
   return response;
+}
+
+export async function getResponseByIdForEvent(eventId: string, responseId: string) {
+  const supabase = createSupabaseServerClient();
+
+  const { data: response, error: responseError } = await supabase
+    .from("responses")
+    .select("*")
+    .eq("id", responseId)
+    .eq("event_id", eventId)
+    .single<ResponseRecord>();
+
+  if (responseError || !response) {
+    return null;
+  }
+
+  const { data: items, error: itemsError } = await supabase
+    .from("response_items")
+    .select("*")
+    .eq("response_id", responseId);
+
+  if (itemsError) {
+    throw new Error(itemsError.message);
+  }
+
+  return {
+    id: response.id,
+    name: response.name,
+    createdAt: response.created_at,
+    items: (items || []).map((item) => ({
+      eventDateId: item.event_date_id,
+      status: item.status,
+    })),
+  } satisfies ResponseWithItems;
 }
 
 export async function getEventResultsById(id: string) {
@@ -304,6 +395,22 @@ async function getEventResultsFromEvent(event: EventDetail) {
     responseItems = (items || []) as ResponseItemRecord[];
   }
 
+  const responsesWithItems: ResponseWithItems[] = (responses || [])
+    .map((response) => ({
+      id: response.id,
+      name: response.name,
+      createdAt: response.created_at,
+      items: responseItems
+        .filter((item) => item.response_id === response.id)
+        .map((item) => ({
+          eventDateId: item.event_date_id,
+          status: item.status,
+        })),
+    }))
+    .sort((a, b) => {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    });
+
   const results: EventDateResult[] = event.candidateDates.map((date) => {
     const items = responseItems.filter((item) => item.event_date_id === date.id);
 
@@ -325,7 +432,7 @@ async function getEventResultsFromEvent(event: EventDetail) {
     };
   });
 
-  results.sort((a, b) => {
+  const rankedResults = [...results].sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
     if (b.availableCount !== a.availableCount) {
       return b.availableCount - a.availableCount;
@@ -333,6 +440,8 @@ async function getEventResultsFromEvent(event: EventDetail) {
 
     return new Date(a.candidateDate).getTime() - new Date(b.candidateDate).getTime();
   });
+
+  const totalResponses = responses?.length || 0;
 
   return {
     event: {
@@ -342,8 +451,15 @@ async function getEventResultsFromEvent(event: EventDetail) {
       description: event.description,
       language: event.language,
     },
-    bestCandidate: results[0] || null,
+    candidateDates: event.candidateDates,
+    bestCandidate: rankedResults[0] || null,
     results,
-    totalResponses: responses?.length || 0,
-  };
+    responses: responsesWithItems,
+    totalResponses,
+    responseRate: {
+      answered: totalResponses,
+      total: totalResponses,
+      percentage: totalResponses > 0 ? 100 : 0,
+    },
+  } satisfies EventResultsPayload;
 }

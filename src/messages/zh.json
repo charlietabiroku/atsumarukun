@@ -86,13 +86,22 @@
   },
   "results": {
     "headline": "结果",
-    "bestCandidate": "最佳候选",
+    "bestCandidate": "最佳候选日期",
+    "responseRate": "回答率",
+    "copyResults": "复制结果",
+    "copiedResults": "已复制",
+    "responseTable": "回答列表",
+    "responseTableHint": "点击回答者姓名即可重新回答。",
+    "date": "日期",
     "responsesSummary": "{total}人中有 {available} 人参加",
     "addToCalendar": "添加到日历",
     "available": "参加",
     "maybe": "待定",
     "unavailable": "不参加",
     "score": "分数 {score}",
-    "appleCalendar": "Apple / ICS"
+    "appleCalendar": "Apple / ICS",
+    "peopleSuffix": "人",
+    "copyTitle": "【集丸君结果】",
+    "bestCandidateCopy": "这是最佳候选日期。"
   }
 }

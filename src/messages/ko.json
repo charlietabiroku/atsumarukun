@@ -87,12 +87,21 @@
   "results": {
     "headline": "결과",
     "bestCandidate": "가장 유력한 일정",
+    "responseRate": "응답률",
+    "copyResults": "결과 복사",
+    "copiedResults": "복사됨",
+    "responseTable": "응답표",
+    "responseTableHint": "응답자 이름을 누르면 그 답변을 다시 수정할 수 있어요.",
+    "date": "일정",
     "responsesSummary": "{total}명 중 {available}명 참석",
     "addToCalendar": "캘린더에 추가",
     "available": "참석",
     "maybe": "미정",
     "unavailable": "불참",
     "score": "점수 {score}",
-    "appleCalendar": "Apple / ICS"
+    "appleCalendar": "Apple / ICS",
+    "peopleSuffix": "명",
+    "copyTitle": "【아츠마루쿤 결과】",
+    "bestCandidateCopy": "가장 유력한 일정입니다."
   }
 }

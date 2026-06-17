@@ -2,8 +2,10 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { LanguageSwitcher } from "@/components/branding/language-switcher";
+import { CandidateDateText } from "@/components/date/candidate-date-text";
 import { AddToCalendarButtons } from "@/components/results/add-to-calendar-buttons";
 import { BestDateCard } from "@/components/results/best-date-card";
+import { ResponseTable } from "@/components/results/response-table";
 import { ResultsList } from "@/components/results/results-list";
 import { Card } from "@/components/ui/card";
 import { getEventResultsBySlug } from "@/lib/db/queries";
@@ -44,12 +46,19 @@ export default async function ResultsPage({
             bestCandidate={payload.bestCandidate}
             locale={locale}
             totalResponses={payload.totalResponses}
+            responseRate={payload.responseRate}
           />
 
           {payload.bestCandidate ? (
             <Card className="p-5">
               <p className="mb-4 text-sm font-semibold text-foreground/60">
                 {t("addToCalendar")}
+              </p>
+              <p className="mb-4 text-base font-semibold">
+                <CandidateDateText
+                  value={payload.bestCandidate.candidateDate}
+                  locale={locale}
+                />
               </p>
               <AddToCalendarButtons
                 title={payload.event.title}
@@ -59,7 +68,19 @@ export default async function ResultsPage({
             </Card>
           ) : null}
 
-          <ResultsList results={payload.results} locale={locale} />
+          <ResultsList
+            results={payload.results}
+            locale={locale}
+            bestCandidateId={payload.bestCandidate?.eventDateId}
+          />
+
+          <ResponseTable
+            slug={payload.event.slug}
+            locale={locale}
+            responses={payload.responses}
+            results={payload.results}
+            bestCandidateId={payload.bestCandidate?.eventDateId}
+          />
         </div>
       </div>
     </main>

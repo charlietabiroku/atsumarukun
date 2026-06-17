@@ -2,13 +2,14 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import { CandidateDateText } from "@/components/date/candidate-date-text";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { EventDetail } from "@/types/event";
-import { ResponseStatus } from "@/types/response";
-import { formatCandidateDate } from "@/lib/utils";
 import { useRouter } from "@/lib/i18n/navigation";
+import { getWeekdayAccentClass } from "@/lib/utils";
+import { EventDetail } from "@/types/event";
+import { ResponseStatus, ResponseWithItems } from "@/types/response";
 
 const statusTheme: Record<
   ResponseStatus,
@@ -31,17 +32,40 @@ const statusTheme: Record<
   },
 };
 
-export function ResponseForm({ event }: { event: EventDetail }) {
+function createInitialStatuses(
+  event: EventDetail,
+  initialResponse?: ResponseWithItems | null,
+) {
+  const fallback = Object.fromEntries(
+    event.candidateDates.map((candidate) => [candidate.id, "maybe"]),
+  ) as Record<string, ResponseStatus>;
+
+  if (!initialResponse) {
+    return fallback;
+  }
+
+  return {
+    ...fallback,
+    ...Object.fromEntries(
+      initialResponse.items.map((item) => [item.eventDateId, item.status]),
+    ),
+  };
+}
+
+export function ResponseForm({
+  event,
+  initialResponse,
+}: {
+  event: EventDetail;
+  initialResponse?: ResponseWithItems | null;
+}) {
   const t = useTranslations("response");
   const common = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [statuses, setStatuses] = useState<Record<string, ResponseStatus>>(
-    () =>
-      Object.fromEntries(
-        event.candidateDates.map((candidate) => [candidate.id, "maybe"]),
-      ),
+  const [name, setName] = useState(initialResponse?.name ?? "");
+  const [statuses, setStatuses] = useState<Record<string, ResponseStatus>>(() =>
+    createInitialStatuses(event, initialResponse),
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -68,6 +92,7 @@ export function ResponseForm({ event }: { event: EventDetail }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          responseId: initialResponse?.id,
           name,
           items: event.candidateDates.map((candidate) => ({
             eventDateId: candidate.id,
@@ -123,11 +148,17 @@ export function ResponseForm({ event }: { event: EventDetail }) {
 
       <div className="space-y-3">
         {event.candidateDates.map((candidate) => (
-          <Card key={candidate.id} className="p-4">
+          <Card
+            key={candidate.id}
+            className={`p-4 ${getWeekdayAccentClass(candidate.candidateDate)}`}
+          >
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold">
-                  {formatCandidateDate(candidate.candidateDate, locale as typeof event.language)}
+                  <CandidateDateText
+                    value={candidate.candidateDate}
+                    locale={locale as typeof event.language}
+                  />
                 </p>
               </div>
               <div className="flex gap-2">

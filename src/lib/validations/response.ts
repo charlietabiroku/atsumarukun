@@ -3,6 +3,7 @@ import { z } from "zod";
 import { MAX_CANDIDATE_DATES } from "@/lib/constants/events";
 
 export const createResponseSchema = z.object({
+  responseId: z.string().uuid().optional(),
   name: z.string().trim().min(1).max(60),
   items: z
     .array(

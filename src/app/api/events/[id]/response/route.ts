@@ -19,6 +19,7 @@ export async function POST(
     const input = createResponseSchema.parse(json);
     const response = await createResponse({
       eventId: id,
+      responseId: input.responseId,
       name: input.name,
       items: input.items,
     });

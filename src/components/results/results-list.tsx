@@ -1,27 +1,35 @@
 import { useTranslations } from "next-intl";
 
+import { CandidateDateText } from "@/components/date/candidate-date-text";
 import { Card } from "@/components/ui/card";
 import { AppLocale } from "@/lib/i18n/routing";
-import { formatCandidateDate } from "@/lib/utils";
+import { getWeekdayAccentClass } from "@/lib/utils";
 import { EventDateResult } from "@/types/response";
 
 export function ResultsList({
   results,
   locale,
+  bestCandidateId,
 }: {
   results: EventDateResult[];
   locale: AppLocale;
+  bestCandidateId?: string;
 }) {
   const t = useTranslations("results");
 
   return (
     <div className="space-y-3">
       {results.map((result) => (
-        <Card key={result.eventDateId} className="p-4">
+        <Card
+          key={result.eventDateId}
+          className={`p-4 ${
+            result.eventDateId === bestCandidateId ? "bg-[#ECFDF3]" : ""
+          } ${getWeekdayAccentClass(result.candidateDate)}`}
+        >
           <div className="space-y-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold">
-                {formatCandidateDate(result.candidateDate, locale)}
+                <CandidateDateText value={result.candidateDate} locale={locale} />
               </p>
               <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold">
                 {t("score", { score: result.score })}
