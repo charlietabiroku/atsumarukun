@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/lib/i18n/navigation";
+import { toCandidateDateIso, toDateTimeLocalInput } from "@/lib/utils";
 import { EventDetail } from "@/types/event";
 
 type CandidateRow = {
@@ -23,17 +24,6 @@ function emptyCandidate() {
   };
 }
 
-function toDateTimeLocalValue(date: string) {
-  const value = new Date(date);
-  const year = value.getFullYear();
-  const month = `${value.getMonth() + 1}`.padStart(2, "0");
-  const day = `${value.getDate()}`.padStart(2, "0");
-  const hours = `${value.getHours()}`.padStart(2, "0");
-  const minutes = `${value.getMinutes()}`.padStart(2, "0");
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
 function createInitialCandidates(event?: EventDetail) {
   if (!event) {
     return [emptyCandidate(), emptyCandidate()];
@@ -41,7 +31,7 @@ function createInitialCandidates(event?: EventDetail) {
 
   const rows = event.candidateDates.map((candidate) => ({
     id: candidate.id,
-    value: toDateTimeLocalValue(candidate.candidateDate),
+    value: toDateTimeLocalInput(candidate.candidateDate),
   }));
 
   return rows.length > 0 ? rows : [emptyCandidate()];
@@ -88,7 +78,7 @@ export function CreateForm({
     const candidateDates = candidates
       .map((item) => item.value)
       .filter(Boolean)
-      .map((value) => new Date(value).toISOString());
+      .map((value) => toCandidateDateIso(value));
 
     if (!title.trim() || candidateDates.length === 0) {
       setError(t("errors.required"));

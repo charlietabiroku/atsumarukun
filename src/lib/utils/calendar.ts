@@ -1,4 +1,6 @@
-import { format } from "date-fns";
+function toCalendarUtcStamp(value: Date) {
+  return value.toISOString().replace(/[-:]/g, "").replace(".000Z", "Z");
+}
 
 export function buildGoogleCalendarUrl(params: {
   title: string;
@@ -8,10 +10,7 @@ export function buildGoogleCalendarUrl(params: {
   const startDate = new Date(params.start);
   const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
 
-  const dates = `${format(startDate, "yyyyMMdd'T'HHmmss'Z'")}/${format(
-    endDate,
-    "yyyyMMdd'T'HHmmss'Z'",
-  )}`;
+  const dates = `${toCalendarUtcStamp(startDate)}/${toCalendarUtcStamp(endDate)}`;
 
   const search = new URLSearchParams({
     action: "TEMPLATE",
@@ -55,8 +54,8 @@ export function buildIcsContent(params: {
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "BEGIN:VEVENT",
-    `DTSTART:${format(startDate, "yyyyMMdd'T'HHmmss'Z'")}`,
-    `DTEND:${format(endDate, "yyyyMMdd'T'HHmmss'Z'")}`,
+    `DTSTART:${toCalendarUtcStamp(startDate)}`,
+    `DTEND:${toCalendarUtcStamp(endDate)}`,
     `SUMMARY:${params.title}`,
     `DESCRIPTION:${params.description || ""}`,
     "END:VEVENT",

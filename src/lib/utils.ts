@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx";
-import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 import { AppLocale } from "@/lib/i18n/routing";
@@ -23,11 +22,23 @@ export function formatCandidateDate(value: string, locale: AppLocale) {
   return new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
     timeStyle: "short",
+    timeZone: "UTC",
   }).format(new Date(value));
 }
 
 export function toDateTimeLocalInput(value?: string) {
   if (!value) return "";
 
-  return format(new Date(value), "yyyy-MM-dd'T'HH:mm");
+  const date = new Date(value);
+  const year = date.getUTCFullYear();
+  const month = `${date.getUTCMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getUTCDate()}`.padStart(2, "0");
+  const hours = `${date.getUTCHours()}`.padStart(2, "0");
+  const minutes = `${date.getUTCMinutes()}`.padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+export function toCandidateDateIso(value: string) {
+  return new Date(`${value}:00.000Z`).toISOString();
 }
