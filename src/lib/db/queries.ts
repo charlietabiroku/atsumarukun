@@ -442,6 +442,15 @@ async function getEventResultsFromEvent(event: EventDetail) {
   });
 
   const totalResponses = responses?.length || 0;
+  const bestCandidate = rankedResults[0] || null;
+  const bestCandidates = bestCandidate
+    ? rankedResults.filter((result) => {
+        return (
+          result.score === bestCandidate.score &&
+          result.availableCount === bestCandidate.availableCount
+        );
+      })
+    : [];
 
   return {
     event: {
@@ -452,7 +461,8 @@ async function getEventResultsFromEvent(event: EventDetail) {
       language: event.language,
     },
     candidateDates: event.candidateDates,
-    bestCandidate: rankedResults[0] || null,
+    bestCandidates,
+    bestCandidate,
     results,
     responses: responsesWithItems,
     totalResponses,

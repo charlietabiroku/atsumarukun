@@ -45,6 +45,7 @@ export type EventResultsPayload = {
     id: string;
     candidateDate: string;
   }>;
+  bestCandidates: EventDateResult[];
   bestCandidate: EventDateResult | null;
   results: EventDateResult[];
   responses: ResponseWithItems[];

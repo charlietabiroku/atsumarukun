@@ -41,11 +41,6 @@ export function ResponseTable({
               <th className="sticky left-0 z-10 bg-white px-3 py-3 text-left font-semibold">
                 {t("date")}
               </th>
-              <th className="bg-white px-3 py-3 text-center font-semibold">{t("available")}</th>
-              <th className="bg-white px-3 py-3 text-center font-semibold">{t("maybe")}</th>
-              <th className="bg-white px-3 py-3 text-center font-semibold">
-                {t("unavailable")}
-              </th>
               {responses.map((response) => (
                 <th key={response.id} className="bg-white px-3 py-3 text-center font-semibold">
                   <Link
@@ -78,18 +73,6 @@ export function ResponseTable({
                     )}
                   >
                     <CandidateDateText value={result.candidateDate} locale={locale} />
-                  </td>
-                  <td className={cn("px-3 py-3 text-center", isBest ? "bg-[#ECFDF3]" : "")}>
-                    {result.availableCount}
-                    {t("peopleSuffix")}
-                  </td>
-                  <td className={cn("px-3 py-3 text-center", isBest ? "bg-[#ECFDF3]" : "")}>
-                    {result.maybeCount}
-                    {t("peopleSuffix")}
-                  </td>
-                  <td className={cn("px-3 py-3 text-center", isBest ? "bg-[#ECFDF3]" : "")}>
-                    {result.unavailableCount}
-                    {t("peopleSuffix")}
                   </td>
                   {responses.map((response) => {
                     const item = response.items.find(

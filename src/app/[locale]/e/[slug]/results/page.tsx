@@ -6,7 +6,6 @@ import { CandidateDateText } from "@/components/date/candidate-date-text";
 import { AddToCalendarButtons } from "@/components/results/add-to-calendar-buttons";
 import { BestDateCard } from "@/components/results/best-date-card";
 import { ResponseTable } from "@/components/results/response-table";
-import { ResultsList } from "@/components/results/results-list";
 import { Card } from "@/components/ui/card";
 import { getEventResultsBySlug } from "@/lib/db/queries";
 
@@ -43,36 +42,33 @@ export default async function ResultsPage({
           </Card>
 
           <BestDateCard
-            bestCandidate={payload.bestCandidate}
+            bestCandidates={payload.bestCandidates}
             locale={locale}
             totalResponses={payload.totalResponses}
             responseRate={payload.responseRate}
           />
 
-          {payload.bestCandidate ? (
+          {payload.bestCandidates.length > 0 ? (
             <Card className="p-5">
               <p className="mb-4 text-sm font-semibold text-foreground/60">
                 {t("addToCalendar")}
               </p>
-              <p className="mb-4 text-base font-semibold">
-                <CandidateDateText
-                  value={payload.bestCandidate.candidateDate}
-                  locale={locale}
-                />
-              </p>
-              <AddToCalendarButtons
-                title={payload.event.title}
-                description={payload.event.description}
-                start={payload.bestCandidate.candidateDate}
-              />
+              <div className="space-y-5">
+                {payload.bestCandidates.map((candidate) => (
+                  <div key={candidate.eventDateId} className="space-y-4">
+                    <p className="text-base font-semibold">
+                      <CandidateDateText value={candidate.candidateDate} locale={locale} />
+                    </p>
+                    <AddToCalendarButtons
+                      title={payload.event.title}
+                      description={payload.event.description}
+                      start={candidate.candidateDate}
+                    />
+                  </div>
+                ))}
+              </div>
             </Card>
           ) : null}
-
-          <ResultsList
-            results={payload.results}
-            locale={locale}
-            bestCandidateId={payload.bestCandidate?.eventDateId}
-          />
 
           <ResponseTable
             slug={payload.event.slug}

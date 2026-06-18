@@ -11,7 +11,7 @@ import { formatCandidateDate } from "@/lib/utils";
 import { EventDateResult } from "@/types/response";
 
 type BestDateCardProps = {
-  bestCandidate: EventDateResult | null;
+  bestCandidates: EventDateResult[];
   locale: AppLocale;
   totalResponses: number;
   responseRate: {
@@ -22,7 +22,7 @@ type BestDateCardProps = {
 };
 
 export function BestDateCard({
-  bestCandidate,
+  bestCandidates,
   locale,
   totalResponses,
   responseRate,
@@ -30,17 +30,17 @@ export function BestDateCard({
   const t = useTranslations("results");
   const [copied, setCopied] = useState(false);
 
-  if (!bestCandidate) {
+  if (bestCandidates.length === 0) {
     return null;
   }
 
-  const selectedBestCandidate = bestCandidate;
+  const selectedBestCandidate = bestCandidates[0];
 
   async function copyResults() {
     const text = [
       t("copyTitle"),
       "",
-      formatCandidateDate(selectedBestCandidate.candidateDate, locale),
+      ...bestCandidates.map((candidate) => formatCandidateDate(candidate.candidateDate, locale)),
       "",
       `${t("available")} ${selectedBestCandidate.availableCount}${t("peopleSuffix")}`,
       `${t("maybe")} ${selectedBestCandidate.maybeCount}${t("peopleSuffix")}`,
@@ -63,9 +63,16 @@ export function BestDateCard({
               <Trophy className="size-4" />
               <span>{t("bestCandidate")}</span>
             </div>
-            <p className="text-xl font-extrabold text-foreground sm:text-2xl">
-              <CandidateDateText value={selectedBestCandidate.candidateDate} locale={locale} />
-            </p>
+            <div className="space-y-2">
+              {bestCandidates.map((candidate) => (
+                <p
+                  key={candidate.eventDateId}
+                  className="text-xl font-extrabold text-foreground sm:text-2xl"
+                >
+                  <CandidateDateText value={candidate.candidateDate} locale={locale} />
+                </p>
+              ))}
+            </div>
             <div className="flex flex-wrap gap-2 text-sm font-semibold">
               <span className="rounded-full bg-white px-3 py-1 text-primary">
                 {t("available")} {selectedBestCandidate.availableCount}
