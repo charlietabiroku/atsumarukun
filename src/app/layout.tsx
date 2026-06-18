@@ -6,6 +6,20 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "集丸くん",
   description: "集まる日、すぐ決まる。",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "集丸くん",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({
