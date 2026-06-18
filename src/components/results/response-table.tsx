@@ -35,17 +35,26 @@ export function ResponseTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-[760px] table-fixed border-separate border-spacing-0 text-sm">
+        <table className="min-w-fit table-fixed border-separate border-spacing-0 text-sm">
+          <colgroup>
+            <col className="w-[220px] sm:w-[240px]" />
+            {responses.map((response) => (
+              <col key={response.id} className="w-[88px] sm:w-[96px]" />
+            ))}
+          </colgroup>
           <thead>
             <tr>
               <th className="sticky left-0 z-10 bg-white px-3 py-3 text-left font-semibold">
                 {t("date")}
               </th>
               {responses.map((response) => (
-                <th key={response.id} className="bg-white px-3 py-3 text-center font-semibold">
+                <th
+                  key={response.id}
+                  className="bg-white px-2 py-3 text-center font-semibold sm:px-3"
+                >
                   <Link
                     href={`/e/${slug}?responseId=${response.id}`}
-                    className="inline-block rounded-full px-2 py-1 text-primary underline-offset-4 hover:underline"
+                    className="inline-block rounded-full px-1 py-1 text-primary underline-offset-4 hover:underline"
                   >
                     {response.name}
                   </Link>
@@ -83,7 +92,7 @@ export function ResponseTable({
                       <td
                         key={`${result.eventDateId}-${response.id}`}
                         className={cn(
-                          "px-3 py-3 text-center text-base font-bold",
+                          "px-2 py-3 text-center text-base font-bold sm:px-3",
                           isBest ? "bg-[#ECFDF3]" : "",
                         )}
                       >

@@ -34,7 +34,6 @@ export function formatCandidateDate(value: string, locale: AppLocale) {
 
 export function getCandidateDateParts(value: string, locale: AppLocale) {
   const date = new Date(value);
-  const year = date.getUTCFullYear();
   const month = `${date.getUTCMonth() + 1}`.padStart(2, "0");
   const day = `${date.getUTCDate()}`.padStart(2, "0");
   const hours = `${date.getUTCHours()}`.padStart(2, "0");
@@ -42,7 +41,7 @@ export function getCandidateDateParts(value: string, locale: AppLocale) {
   const weekdayIndex = date.getUTCDay();
 
   return {
-    dateText: `${year}/${month}/${day}`,
+    dateText: `${month}/${day}`,
     weekdayText: weekdayLabels[locale][weekdayIndex],
     timeText: `${hours}:${minutes}`,
     weekdayIndex,
