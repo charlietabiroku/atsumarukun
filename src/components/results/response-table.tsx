@@ -12,6 +12,12 @@ const responseSymbol: Record<ResponseStatus, string> = {
   unavailable: "×",
 };
 
+const responseSymbolClass: Record<ResponseStatus, string> = {
+  available: "text-[#16A34A]",
+  maybe: "text-[#c48800]",
+  unavailable: "text-danger",
+};
+
 export function ResponseTable({
   slug,
   locale,
@@ -35,26 +41,26 @@ export function ResponseTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-fit table-fixed border-separate border-spacing-0 text-sm">
+        <table className="min-w-fit table-fixed border-separate border-spacing-0 text-xs sm:text-sm">
           <colgroup>
-            <col className="w-[220px] sm:w-[240px]" />
+            <col className="w-[154px] sm:w-[168px]" />
             {responses.map((response) => (
-              <col key={response.id} className="w-[88px] sm:w-[96px]" />
+              <col key={response.id} className="w-[54px] sm:w-[62px]" />
             ))}
           </colgroup>
           <thead>
             <tr>
-              <th className="sticky left-0 z-10 bg-white px-3 py-3 text-left font-semibold">
+              <th className="sticky left-0 z-10 bg-white px-2 py-2.5 text-left font-semibold sm:px-2.5">
                 {t("date")}
               </th>
               {responses.map((response) => (
                 <th
                   key={response.id}
-                  className="bg-white px-2 py-3 text-center font-semibold sm:px-3"
+                  className="bg-white px-1 py-2.5 text-center font-semibold sm:px-1.5"
                 >
                   <Link
                     href={`/e/${slug}?responseId=${response.id}`}
-                    className="inline-block rounded-full px-1 py-1 text-primary underline-offset-4 hover:underline"
+                    className="inline-block rounded-full px-1 py-0.5 text-primary underline-offset-4 hover:underline"
                   >
                     {response.name}
                   </Link>
@@ -76,7 +82,7 @@ export function ResponseTable({
                 >
                   <td
                     className={cn(
-                      "sticky left-0 px-3 py-3 font-semibold",
+                      "sticky left-0 whitespace-nowrap px-2 py-2.5 font-semibold sm:px-2.5",
                       isBest ? "bg-[#ECFDF3]" : "bg-white",
                       getWeekdayAccentClass(result.candidateDate),
                     )}
@@ -92,7 +98,8 @@ export function ResponseTable({
                       <td
                         key={`${result.eventDateId}-${response.id}`}
                         className={cn(
-                          "px-2 py-3 text-center text-base font-bold sm:px-3",
+                          "px-1 py-2 text-center text-sm font-bold sm:px-1.5 sm:text-base",
+                          item ? responseSymbolClass[item.status] : "text-foreground/40",
                           isBest ? "bg-[#ECFDF3]" : "",
                         )}
                       >
