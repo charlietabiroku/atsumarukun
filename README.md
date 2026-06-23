@@ -70,6 +70,10 @@ cp .env.example .env.local
 - `SUPABASE_SERVICE_ROLE_KEY`
   - サーバー API で Supabase に安全に書き込むためのキー
   - このプロジェクトでは設定推奨
+- `ADMIN_EMAIL`
+  - 管理画面にログインするメールアドレス
+- `ADMIN_PASSWORD`
+  - 管理画面にログインするパスワード
 
 `.env.local` の例:
 
@@ -78,6 +82,8 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=change-this-password
 ```
 
 ## Supabase セットアップ
@@ -106,6 +112,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 - サーバー側 API で使うキーは `SUPABASE_SERVICE_ROLE_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY` は絶対に公開しないでください
 - Vercel には登録して問題ありませんが、`NEXT_PUBLIC_` を付けないでください
+- `ADMIN_PASSWORD` も公開しないでください
 
 ## ローカル起動方法
 
@@ -155,6 +162,46 @@ pnpm build
 - `GET /api/events/[id]`
 - `POST /api/events/[id]/response`
 - `GET /api/events/[id]/results`
+- `PATCH /api/events/[id]/response/[responseId]`
+- `POST /api/admin/login`
+- `POST /api/admin/logout`
+- `PATCH /api/admin/events/[eventId]`
+- `DELETE /api/admin/events/[eventId]`
+- `PATCH /api/admin/events/[eventId]/responses/[responseId]`
+- `DELETE /api/admin/events/[eventId]/responses/[responseId]`
+
+## 管理画面
+
+- ログイン画面
+  - `/admin/login`
+- イベント一覧
+  - `/admin/events`
+- イベント詳細
+  - `/admin/events/[eventId]`
+- イベント編集
+  - `/admin/events/[eventId]/edit`
+
+管理画面では以下を直接編集できます。
+
+- イベント名
+- 説明文
+- 候補日
+- 候補時間
+- 回答締切
+- 受付状態
+- 共有URLの有効 / 無効
+- 回答者の回答内容
+- 回答者コメント
+
+## 管理者動作確認
+
+1. `/admin/login` にアクセス
+2. `ADMIN_EMAIL` と `ADMIN_PASSWORD` でログイン
+3. `/admin/events` でイベント一覧を確認
+4. 対象イベントを開いて詳細を確認
+5. `編集` を押して `/admin/events/[eventId]/edit` へ進む
+6. イベント内容や回答内容を修正して `保存する`
+7. 公開ページ `/ja/e/[slug]` または `/ja/e/[slug]/results` を開いて反映を確認
 
 ## Vercel デプロイ前提の確認事項
 
@@ -185,6 +232,8 @@ pnpm build
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY`
+   - `ADMIN_EMAIL`
+   - `ADMIN_PASSWORD`
 7. Preview deploy を実行
 8. Preview URL 上で以下を確認
    - TOP 画面が表示される
@@ -203,6 +252,10 @@ pnpm build
   - Supabase anon public key
 - `SUPABASE_SERVICE_ROLE_KEY`
   - サーバー API 用
+- `ADMIN_EMAIL`
+  - 管理画面ログイン用メールアドレス
+- `ADMIN_PASSWORD`
+  - 管理画面ログイン用パスワード
 
 ## 初回コミット前の整理ポイント
 
