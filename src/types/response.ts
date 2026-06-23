@@ -4,6 +4,7 @@ export type ResponseRecord = {
   id: string;
   event_id: string;
   name: string;
+  comment: string | null;
   created_at: string;
 };
 
@@ -26,6 +27,7 @@ export type EventDateResult = {
 export type ResponseWithItems = {
   id: string;
   name: string;
+  comment?: string | null;
   createdAt: string;
   items: Array<{
     eventDateId: string;

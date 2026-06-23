@@ -103,6 +103,31 @@ export function toDateTimeLocalInput(value?: string) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+export function toDateInput(value?: string) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  const year = date.getUTCFullYear();
+  const month = `${date.getUTCMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getUTCDate()}`.padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+export function toTimeInput(value?: string) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  const hours = `${date.getUTCHours()}`.padStart(2, "0");
+  const minutes = `${date.getUTCMinutes()}`.padStart(2, "0");
+
+  return `${hours}:${minutes}`;
+}
+
 export function toCandidateDateIso(value: string) {
   return new Date(`${value}:00.000Z`).toISOString();
+}
+
+export function toCandidateDateIsoFromParts(date: string, time: string) {
+  return new Date(`${date}T${time}:00.000Z`).toISOString();
 }

@@ -6,6 +6,9 @@ create table if not exists public.events (
   description text,
   slug text not null unique,
   language text not null check (language in ('ja', 'zh', 'en', 'ko')),
+  response_deadline timestamptz,
+  reception_status text not null default 'open' check (reception_status in ('open', 'paused', 'closed')),
+  share_enabled boolean not null default true,
   created_at timestamptz not null default now()
 );
 
@@ -13,6 +16,7 @@ create table if not exists public.event_dates (
   id uuid primary key default gen_random_uuid(),
   event_id uuid not null references public.events(id) on delete cascade,
   candidate_date timestamptz not null,
+  display_order integer not null default 0,
   created_at timestamptz not null default now(),
   unique (event_id, candidate_date)
 );
@@ -21,8 +25,27 @@ create table if not exists public.responses (
   id uuid primary key default gen_random_uuid(),
   event_id uuid not null references public.events(id) on delete cascade,
   name text not null,
+  comment text,
   created_at timestamptz not null default now()
 );
+
+alter table public.events
+  add column if not exists response_deadline timestamptz,
+  add column if not exists reception_status text not null default 'open',
+  add column if not exists share_enabled boolean not null default true;
+
+alter table public.events
+  drop constraint if exists events_reception_status_check;
+
+alter table public.events
+  add constraint events_reception_status_check
+  check (reception_status in ('open', 'paused', 'closed'));
+
+alter table public.event_dates
+  add column if not exists display_order integer not null default 0;
+
+alter table public.responses
+  add column if not exists comment text;
 
 create table if not exists public.response_items (
   id uuid primary key default gen_random_uuid(),

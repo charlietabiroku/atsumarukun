@@ -26,32 +26,87 @@ type UpdateEventInput = {
   candidateDates: string[];
 };
 
+type AdminUpdateEventInput = {
+  id: string;
+  title: string;
+  description: string;
+  language: "ja" | "zh" | "en" | "ko";
+  responseDeadline: string | null;
+  receptionStatus: "open" | "paused" | "closed";
+  shareEnabled: boolean;
+  candidateDates: Array<{
+    id?: string;
+    candidateDate: string;
+    displayOrder: number;
+  }>;
+};
+
 type CreateResponseInput = {
   eventId: string;
   responseId?: string;
   name: string;
+  comment?: string;
   items: Array<{
     eventDateId: string;
     status: ResponseStatus;
   }>;
 };
 
-function mapEventDetail(
-  event: EventRecord,
-  candidateDates: Array<{ id: string; candidate_date: string }>,
-): EventDetail {
+type AdminUpdateResponseInput = {
+  eventId: string;
+  responseId: string;
+  name: string;
+  comment?: string;
+  items: Array<{
+    eventDateId: string;
+    status: ResponseStatus;
+  }>;
+};
+
+type EventDateRow = {
+  id: string;
+  candidate_date: string;
+  display_order: number | null;
+};
+
+function normalizeDisplayOrder(index: number, value?: number | null) {
+  return value ?? index;
+}
+
+function mapEventDetail(event: EventRecord, candidateDates: EventDateRow[]): EventDetail {
   return {
     id: event.id,
     slug: event.slug,
     title: event.title,
     description: event.description,
     language: event.language,
+    responseDeadline: event.response_deadline,
+    receptionStatus: event.reception_status,
+    shareEnabled: event.share_enabled,
     createdAt: event.created_at,
-    candidateDates: candidateDates.map((date) => ({
+    candidateDates: candidateDates.map((date, index) => ({
       id: date.id,
       candidateDate: date.candidate_date,
+      displayOrder: normalizeDisplayOrder(index, date.display_order),
     })),
   };
+}
+
+async function fetchEventDates(eventId: string) {
+  const supabase = createSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from("event_dates")
+    .select("id, candidate_date, display_order")
+    .eq("event_id", eventId)
+    .order("display_order", { ascending: true })
+    .order("candidate_date", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data || []) as EventDateRow[];
 }
 
 export async function createEvent(input: CreateEventInput) {
@@ -65,6 +120,9 @@ export async function createEvent(input: CreateEventInput) {
       description: input.description || null,
       language: input.language,
       slug,
+      response_deadline: null,
+      reception_status: "open",
+      share_enabled: true,
     })
     .select("*")
     .single<EventRecord>();
@@ -74,9 +132,10 @@ export async function createEvent(input: CreateEventInput) {
   }
 
   const { error: datesError } = await supabase.from("event_dates").insert(
-    input.candidateDates.map((candidateDate) => ({
+    input.candidateDates.map((candidateDate, index) => ({
       event_id: event.id,
       candidate_date: candidateDate,
+      display_order: index,
     })),
   );
 
@@ -89,7 +148,6 @@ export async function createEvent(input: CreateEventInput) {
 
 export async function getEventById(id: string) {
   const supabase = createSupabaseServerClient();
-
   const { data: event, error: eventError } = await supabase
     .from("events")
     .select("*")
@@ -100,22 +158,12 @@ export async function getEventById(id: string) {
     return null;
   }
 
-  const { data: dates, error: datesError } = await supabase
-    .from("event_dates")
-    .select("id, candidate_date")
-    .eq("event_id", event.id)
-    .order("candidate_date", { ascending: true });
-
-  if (datesError) {
-    throw new Error(datesError.message);
-  }
-
-  return mapEventDetail(event, dates || []);
+  const dates = await fetchEventDates(event.id);
+  return mapEventDetail(event, dates);
 }
 
 export async function getEventBySlug(slug: string) {
   const supabase = createSupabaseServerClient();
-
   const { data: event, error: eventError } = await supabase
     .from("events")
     .select("*")
@@ -126,20 +174,34 @@ export async function getEventBySlug(slug: string) {
     return null;
   }
 
-  const { data: dates, error: datesError } = await supabase
-    .from("event_dates")
-    .select("id, candidate_date")
-    .eq("event_id", event.id)
-    .order("candidate_date", { ascending: true });
-
-  if (datesError) {
-    throw new Error(datesError.message);
-  }
-
-  return mapEventDetail(event, dates || []);
+  const dates = await fetchEventDates(event.id);
+  return mapEventDetail(event, dates);
 }
 
 export async function updateEvent(input: UpdateEventInput) {
+  const current = await getEventById(input.id);
+
+  if (!current) {
+    throw new Error("Event not found");
+  }
+
+  return updateEventAdmin({
+    id: input.id,
+    title: input.title,
+    description: input.description,
+    language: input.language,
+    responseDeadline: current.responseDeadline,
+    receptionStatus: current.receptionStatus,
+    shareEnabled: current.shareEnabled,
+    candidateDates: input.candidateDates.map((candidateDate, index) => ({
+      id: current.candidateDates.find((item) => item.candidateDate === candidateDate)?.id,
+      candidateDate,
+      displayOrder: index,
+    })),
+  });
+}
+
+export async function updateEventAdmin(input: AdminUpdateEventInput) {
   const supabase = createSupabaseServerClient();
 
   const { data: event, error: eventError } = await supabase
@@ -148,6 +210,9 @@ export async function updateEvent(input: UpdateEventInput) {
       title: input.title,
       description: input.description || null,
       language: input.language,
+      response_deadline: input.responseDeadline,
+      reception_status: input.receptionStatus,
+      share_enabled: input.shareEnabled,
     })
     .eq("id", input.id)
     .select("*")
@@ -157,70 +222,70 @@ export async function updateEvent(input: UpdateEventInput) {
     throw new Error(eventError?.message || "Failed to update event");
   }
 
-  const { data: existingDates, error: existingDatesError } = await supabase
-    .from("event_dates")
-    .select("id, candidate_date")
-    .eq("event_id", input.id);
+  const existingDates = await fetchEventDates(input.id);
+  const existingById = new Map(existingDates.map((item) => [item.id, item]));
+  const nextIds = new Set(input.candidateDates.flatMap((item) => (item.id ? [item.id] : [])));
 
-  if (existingDatesError) {
-    throw new Error(existingDatesError.message);
-  }
-
-  const currentDates = existingDates || [];
-  const nextDateSet = new Set(input.candidateDates);
-
-  const removedDateIds = currentDates
-    .filter((item) => !nextDateSet.has(item.candidate_date))
+  const removedDateIds = existingDates
+    .filter((item) => !nextIds.has(item.id))
     .map((item) => item.id);
 
   if (removedDateIds.length > 0) {
-    const { error: responseItemsError } = await supabase
+    const { error: deleteItemsError } = await supabase
       .from("response_items")
       .delete()
       .in("event_date_id", removedDateIds);
 
-    if (responseItemsError) {
-      throw new Error(responseItemsError.message);
+    if (deleteItemsError) {
+      throw new Error(deleteItemsError.message);
     }
 
-    const { error: removeDatesError } = await supabase
+    const { error: deleteDatesError } = await supabase
       .from("event_dates")
       .delete()
       .in("id", removedDateIds);
 
-    if (removeDatesError) {
-      throw new Error(removeDatesError.message);
+    if (deleteDatesError) {
+      throw new Error(deleteDatesError.message);
     }
   }
 
-  const currentDateSet = new Set(currentDates.map((item) => item.candidate_date));
-  const addedDates = input.candidateDates.filter((candidateDate) => {
-    return !currentDateSet.has(candidateDate);
-  });
+  for (const item of input.candidateDates) {
+    if (item.id && existingById.has(item.id)) {
+      const { error } = await supabase
+        .from("event_dates")
+        .update({
+          candidate_date: item.candidateDate,
+          display_order: item.displayOrder,
+        })
+        .eq("id", item.id);
 
-  if (addedDates.length > 0) {
-    const { error: addDatesError } = await supabase.from("event_dates").insert(
-      addedDates.map((candidateDate) => ({
-        event_id: input.id,
-        candidate_date: candidateDate,
-      })),
-    );
+      if (error) {
+        throw new Error(error.message);
+      }
+      continue;
+    }
 
-    if (addDatesError) {
-      throw new Error(addDatesError.message);
+    const { error } = await supabase.from("event_dates").insert({
+      event_id: input.id,
+      candidate_date: item.candidateDate,
+      display_order: item.displayOrder,
+    });
+
+    if (error) {
+      throw new Error(error.message);
     }
   }
 
   return event;
 }
 
-export async function createResponse(input: CreateResponseInput) {
+async function validateEventDateItems(eventId: string, items: CreateResponseInput["items"]) {
   const supabase = createSupabaseServerClient();
-
   const { data: eventDates, error: eventDatesError } = await supabase
     .from("event_dates")
     .select("id")
-    .eq("event_id", input.eventId);
+    .eq("event_id", eventId);
 
   if (eventDatesError) {
     throw new Error(eventDatesError.message);
@@ -229,11 +294,16 @@ export async function createResponse(input: CreateResponseInput) {
   const validDateIds = new Set((eventDates || []).map((item) => item.id));
 
   if (
-    input.items.length !== validDateIds.size ||
-    input.items.some((item) => !validDateIds.has(item.eventDateId))
+    items.length !== validDateIds.size ||
+    items.some((item) => !validDateIds.has(item.eventDateId))
   ) {
     throw new Error("All event dates must be answered");
   }
+}
+
+export async function createResponse(input: CreateResponseInput) {
+  await validateEventDateItems(input.eventId, input.items);
+  const supabase = createSupabaseServerClient();
 
   if (input.responseId) {
     const { data: existingResponse, error: existingResponseError } = await supabase
@@ -251,6 +321,7 @@ export async function createResponse(input: CreateResponseInput) {
       .from("responses")
       .update({
         name: input.name,
+        comment: input.comment || null,
       })
       .eq("id", input.responseId)
       .select("*")
@@ -289,6 +360,7 @@ export async function createResponse(input: CreateResponseInput) {
     .insert({
       event_id: input.eventId,
       name: input.name,
+      comment: input.comment || null,
     })
     .select("*")
     .single<ResponseRecord>();
@@ -312,6 +384,38 @@ export async function createResponse(input: CreateResponseInput) {
   return response;
 }
 
+export async function updateResponseAdmin(input: AdminUpdateResponseInput) {
+  return createResponse({
+    eventId: input.eventId,
+    responseId: input.responseId,
+    name: input.name,
+    comment: input.comment,
+    items: input.items,
+  });
+}
+
+export async function deleteResponseAdmin(eventId: string, responseId: string) {
+  const supabase = createSupabaseServerClient();
+  const { error } = await supabase
+    .from("responses")
+    .delete()
+    .eq("id", responseId)
+    .eq("event_id", eventId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function deleteEventAdmin(eventId: string) {
+  const supabase = createSupabaseServerClient();
+  const { error } = await supabase.from("events").delete().eq("id", eventId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function getResponseByIdForEvent(eventId: string, responseId: string) {
   const supabase = createSupabaseServerClient();
 
@@ -331,19 +435,53 @@ export async function getResponseByIdForEvent(eventId: string, responseId: strin
     .select("*")
     .eq("response_id", responseId);
 
-  if (itemsError) {
+    if (itemsError) {
     throw new Error(itemsError.message);
   }
 
   return {
     id: response.id,
     name: response.name,
+    comment: response.comment,
     createdAt: response.created_at,
     items: (items || []).map((item) => ({
       eventDateId: item.event_date_id,
       status: item.status,
     })),
   } satisfies ResponseWithItems;
+}
+
+export async function getAllEventsForAdmin() {
+  const supabase = createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data || []) as EventRecord[];
+}
+
+export async function getAdminEventById(eventId: string) {
+  const event = await getEventById(eventId);
+
+  if (!event) {
+    return null;
+  }
+
+  const results = await getEventResultsById(eventId);
+
+  if (!results) {
+    return null;
+  }
+
+  return {
+    event,
+    results,
+  };
 }
 
 export async function getEventResultsById(id: string) {
@@ -368,7 +506,6 @@ export async function getEventResultsBySlug(slug: string) {
 
 async function getEventResultsFromEvent(event: EventDetail) {
   const supabase = createSupabaseServerClient();
-
   const { data: responses, error: responsesError } = await supabase
     .from("responses")
     .select("*")
@@ -379,7 +516,6 @@ async function getEventResultsFromEvent(event: EventDetail) {
   }
 
   const responseIds = (responses as ResponseRecord[]).map((response) => response.id);
-
   let responseItems: ResponseItemRecord[] = [];
 
   if (responseIds.length > 0) {
@@ -399,6 +535,7 @@ async function getEventResultsFromEvent(event: EventDetail) {
     .map((response) => ({
       id: response.id,
       name: response.name,
+      comment: response.comment,
       createdAt: response.created_at,
       items: responseItems
         .filter((item) => item.response_id === response.id)
@@ -407,19 +544,13 @@ async function getEventResultsFromEvent(event: EventDetail) {
           status: item.status,
         })),
     }))
-    .sort((a, b) => {
-      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-    });
+    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
   const results: EventDateResult[] = event.candidateDates.map((date) => {
     const items = responseItems.filter((item) => item.event_date_id === date.id);
-
     const availableCount = items.filter((item) => item.status === "available").length;
     const maybeCount = items.filter((item) => item.status === "maybe").length;
-    const unavailableCount = items.filter(
-      (item) => item.status === "unavailable",
-    ).length;
-
+    const unavailableCount = items.filter((item) => item.status === "unavailable").length;
     const score = items.reduce((sum, item) => sum + scoreStatus(item.status), 0);
 
     return {
@@ -444,12 +575,11 @@ async function getEventResultsFromEvent(event: EventDetail) {
   const totalResponses = responses?.length || 0;
   const bestCandidate = rankedResults[0] || null;
   const bestCandidates = bestCandidate
-    ? rankedResults.filter((result) => {
-        return (
+    ? rankedResults.filter(
+        (result) =>
           result.score === bestCandidate.score &&
-          result.availableCount === bestCandidate.availableCount
-        );
-      })
+          result.availableCount === bestCandidate.availableCount,
+      )
     : [];
 
   return {
