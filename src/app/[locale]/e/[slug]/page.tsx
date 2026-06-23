@@ -4,24 +4,44 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/branding/language-switcher";
 import { ResponseForm } from "@/components/response/response-form";
 import { Card } from "@/components/ui/card";
-import { getEventBySlug, getResponseByIdForEvent } from "@/lib/db/queries";
+import {
+  getEventBySlug,
+  getEventResultsBySlug,
+  getResponseByIdForEvent,
+} from "@/lib/db/queries";
 
 export default async function EventPage({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: "ja" | "zh" | "en" | "ko"; slug: string }>;
-  searchParams: Promise<{ responseId?: string }>;
+  searchParams: Promise<{ responseId?: string; updated?: string }>;
 }) {
   const { locale, slug } = await params;
-  const { responseId } = await searchParams;
+  const { responseId, updated } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("response");
   const event = await getEventBySlug(slug);
+  const overallStatus = await getEventResultsBySlug(slug);
 
-  if (!event) {
+  if (!event || !overallStatus) {
     notFound();
   }
+
+  const deadlinePassed = event.responseDeadline
+    ? new Date(event.responseDeadline).getTime() < Date.now()
+    : false;
+  const isSubmissionOpen =
+    event.shareEnabled && event.receptionStatus === "open" && !deadlinePassed;
+  const submissionNotice = !event.shareEnabled
+    ? t("shareDisabledNotice")
+    : event.receptionStatus === "paused"
+      ? t("pausedNotice")
+      : event.receptionStatus === "closed"
+        ? t("closedNotice")
+        : deadlinePassed
+          ? t("deadlinePassedNotice")
+          : "";
 
   const initialResponse = responseId
     ? await getResponseByIdForEvent(event.id, responseId)
@@ -42,7 +62,15 @@ export default async function EventPage({
               <p className="text-sm leading-6 text-foreground/65">{event.description}</p>
             ) : null}
           </div>
-          <ResponseForm event={event} initialResponse={initialResponse} />
+          <ResponseForm
+            event={event}
+            initialResponse={initialResponse}
+            overallStatus={overallStatus}
+            requestedResponseId={responseId}
+            justUpdated={updated === "1"}
+            isSubmissionOpen={isSubmissionOpen}
+            submissionNotice={submissionNotice}
+          />
         </Card>
       </div>
     </main>
