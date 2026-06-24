@@ -7,6 +7,7 @@ import { AddToCalendarButtons } from "@/components/results/add-to-calendar-butto
 import { BestDateCard } from "@/components/results/best-date-card";
 import { ResponseTable } from "@/components/results/response-table";
 import { Card } from "@/components/ui/card";
+import { isAdminAuthenticated } from "@/lib/admin/auth";
 import { getEventResultsBySlug } from "@/lib/db/queries";
 
 export default async function ResultsPage({
@@ -18,6 +19,7 @@ export default async function ResultsPage({
   setRequestLocale(locale);
   const t = await getTranslations("results");
   const payload = await getEventResultsBySlug(slug);
+  const adminViewer = await isAdminAuthenticated();
 
   if (!payload) {
     notFound();
@@ -71,11 +73,13 @@ export default async function ResultsPage({
           ) : null}
 
           <ResponseTable
+            eventId={payload.event.id}
             slug={payload.event.slug}
             locale={locale}
             responses={payload.responses}
             results={payload.results}
             bestCandidateId={payload.bestCandidate?.eventDateId}
+            isAdminViewer={adminViewer}
           />
         </div>
       </div>
