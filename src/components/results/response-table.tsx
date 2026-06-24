@@ -1,8 +1,12 @@
+"use client";
+
 import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 
 import { CandidateDateText } from "@/components/date/candidate-date-text";
 import { Link } from "@/lib/i18n/navigation";
 import { AppLocale } from "@/lib/i18n/routing";
+import { buildResponseStorageKey, parseStoredResponseMeta } from "@/lib/utils/response-storage";
 import { cn, getWeekdayAccentClass } from "@/lib/utils";
 import { EventDateResult, ResponseStatus, ResponseWithItems } from "@/types/response";
 
@@ -19,25 +23,56 @@ const responseSymbolClass: Record<ResponseStatus, string> = {
 };
 
 export function ResponseTable({
+  eventId,
   slug,
   locale,
   responses,
   results,
   bestCandidateId,
+  isAdminViewer,
 }: {
+  eventId: string;
   slug: string;
   locale: AppLocale;
   responses: ResponseWithItems[];
   results: EventDateResult[];
   bestCandidateId?: string;
+  isAdminViewer?: boolean;
 }) {
   const t = useTranslations("results");
+  const [storedResponseId, setStoredResponseId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const stored = parseStoredResponseMeta(
+      window.localStorage.getItem(buildResponseStorageKey(eventId)),
+    );
+
+    setStoredResponseId(stored?.responseId ?? null);
+  }, [eventId]);
+
+  const canViewTable = useMemo(() => {
+    if (isAdminViewer) {
+      return true;
+    }
+
+    return responses.some((response) => response.id === storedResponseId);
+  }, [isAdminViewer, responses, storedResponseId]);
+
+  const hintKey = isAdminViewer ? "responseTableHint" : "responseTableOwnerHint";
+
+  if (!canViewTable) {
+    return null;
+  }
 
   return (
     <div className="rounded-[28px] border border-border bg-white p-4 shadow-sm sm:p-5">
       <div className="mb-4 space-y-1">
         <h2 className="text-lg font-extrabold">{t("responseTable")}</h2>
-        <p className="text-sm text-foreground/60">{t("responseTableHint")}</p>
+        <p className="text-sm text-foreground/60">{t(hintKey)}</p>
       </div>
 
       <div className="overflow-x-auto">
@@ -58,12 +93,18 @@ export function ResponseTable({
                   key={response.id}
                   className="bg-white px-1 py-2.5 text-center font-semibold sm:px-1.5"
                 >
-                  <Link
-                    href={`/e/${slug}?responseId=${response.id}`}
-                    className="inline-block rounded-full px-1 py-0.5 text-primary underline-offset-4 hover:underline"
-                  >
-                    {response.name}
-                  </Link>
+                  {isAdminViewer || response.id === storedResponseId ? (
+                    <Link
+                      href={`/e/${slug}?responseId=${response.id}`}
+                      className="inline-block rounded-full px-1 py-0.5 text-primary underline-offset-4 hover:underline"
+                    >
+                      {response.name}
+                    </Link>
+                  ) : (
+                    <span className="inline-block rounded-full px-1 py-0.5 text-foreground/70">
+                      {response.name}
+                    </span>
+                  )}
                 </th>
               ))}
             </tr>
