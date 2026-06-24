@@ -111,6 +111,7 @@
     "copiedResults": "복사됨",
     "responseTable": "응답표",
     "responseTableHint": "응답자 이름을 누르면 그 답변을 다시 수정할 수 있어요.",
+    "responseTableOwnerHint": "내 이름을 누르면 내 응답을 다시 수정할 수 있어요.",
     "date": "일정",
     "responsesSummary": "{total}명 중 {available}명 참석",
     "addToCalendar": "캘린더에 추가",
