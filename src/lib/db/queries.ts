@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { buildAbsoluteUrl, buildEventUrl } from "@/lib/utils";
 import { createEventSlug } from "@/lib/utils/slug";
 import { scoreStatus } from "@/lib/utils/scoring";
 import { EventDetail, EventRecord } from "@/types/event";
@@ -61,6 +62,25 @@ type AdminUpdateResponseInput = {
     eventDateId: string;
     status: ResponseStatus;
   }>;
+};
+
+export type AdminEventSummary = {
+  id: string;
+  slug: string;
+  title: string;
+  description: string | null;
+  language: "ja" | "zh" | "en" | "ko";
+  responseDeadline: string | null;
+  receptionStatus: "open" | "paused" | "closed";
+  shareEnabled: boolean;
+  createdAt: string;
+  shareUrl: string;
+  responseCount: number;
+  candidateCount: number;
+  bestCandidate: {
+    candidateDate: string;
+    availableCount: number;
+  } | null;
 };
 
 type EventDateRow = {
@@ -409,6 +429,60 @@ export async function deleteResponseAdmin(eventId: string, responseId: string) {
 
 export async function deleteEventAdmin(eventId: string) {
   const supabase = createSupabaseServerClient();
+  const dates = await fetchEventDates(eventId);
+  const dateIds = dates.map((date) => date.id);
+
+  const { data: responses, error: responsesFetchError } = await supabase
+    .from("responses")
+    .select("id")
+    .eq("event_id", eventId);
+
+  if (responsesFetchError) {
+    throw new Error(responsesFetchError.message);
+  }
+
+  const responseIds = (responses || []).map((response) => response.id as string);
+
+  if (responseIds.length > 0) {
+    const { error: deleteItemsByResponseError } = await supabase
+      .from("response_items")
+      .delete()
+      .in("response_id", responseIds);
+
+    if (deleteItemsByResponseError) {
+      throw new Error(deleteItemsByResponseError.message);
+    }
+  }
+
+  if (dateIds.length > 0) {
+    const { error: deleteItemsByDateError } = await supabase
+      .from("response_items")
+      .delete()
+      .in("event_date_id", dateIds);
+
+    if (deleteItemsByDateError) {
+      throw new Error(deleteItemsByDateError.message);
+    }
+  }
+
+  const { error: deleteResponsesError } = await supabase
+    .from("responses")
+    .delete()
+    .eq("event_id", eventId);
+
+  if (deleteResponsesError) {
+    throw new Error(deleteResponsesError.message);
+  }
+
+  const { error: deleteDatesError } = await supabase
+    .from("event_dates")
+    .delete()
+    .eq("event_id", eventId);
+
+  if (deleteDatesError) {
+    throw new Error(deleteDatesError.message);
+  }
+
   const { error } = await supabase.from("events").delete().eq("id", eventId);
 
   if (error) {
@@ -463,6 +537,46 @@ export async function getAllEventsForAdmin() {
   }
 
   return (data || []) as EventRecord[];
+}
+
+export async function getAdminEventSummaries() {
+  const events = await getAllEventsForAdmin();
+
+  const summaries = await Promise.all(
+    events.map(async (event) => {
+      const detail = await getEventById(event.id);
+
+      if (!detail) {
+        return null;
+      }
+
+      const results = await getEventResultsFromEvent(detail);
+      const bestCandidate = results.bestCandidate
+        ? {
+            candidateDate: results.bestCandidate.candidateDate,
+            availableCount: results.bestCandidate.availableCount,
+          }
+        : null;
+
+      return {
+        id: detail.id,
+        slug: detail.slug,
+        title: detail.title,
+        description: detail.description,
+        language: detail.language,
+        responseDeadline: detail.responseDeadline,
+        receptionStatus: detail.receptionStatus,
+        shareEnabled: detail.shareEnabled,
+        createdAt: detail.createdAt,
+        shareUrl: buildAbsoluteUrl(buildEventUrl(detail.language, detail.slug)),
+        responseCount: results.responses.length,
+        candidateCount: detail.candidateDates.length,
+        bestCandidate,
+      } satisfies AdminEventSummary;
+    }),
+  );
+
+  return summaries.filter((item): item is AdminEventSummary => item !== null);
 }
 
 export async function getAdminEventById(eventId: string) {
