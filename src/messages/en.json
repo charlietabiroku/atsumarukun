@@ -111,6 +111,7 @@
     "copiedResults": "Copied",
     "responseTable": "Response Table",
     "responseTableHint": "Tap a respondent name to edit that reply.",
+    "responseTableOwnerHint": "Tap your name to edit your response.",
     "date": "Date",
     "responsesSummary": "{available} available out of {total}",
     "addToCalendar": "Add to calendar",
