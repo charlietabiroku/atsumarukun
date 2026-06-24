@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { CandidateDateText } from "@/components/date/candidate-date-text";
 import { ResultsList } from "@/components/results/results-list";
 import { Card } from "@/components/ui/card";
+import { Link } from "@/lib/i18n/navigation";
 import { AppLocale } from "@/lib/i18n/routing";
 import { cn } from "@/lib/utils";
 import { EventResultsPayload } from "@/types/response";
@@ -96,9 +97,12 @@ export function OverallStatusPanel({
                       key={response.id}
                       className="bg-white px-1 py-2 text-center font-semibold sm:px-1.5"
                     >
-                      <span className="inline-block max-w-[52px] truncate align-middle text-primary sm:max-w-[60px]">
+                      <Link
+                        href={`/e/${payload.event.slug}?responseId=${response.id}`}
+                        className="inline-block max-w-[52px] truncate rounded-full px-1 py-0.5 align-middle text-primary underline-offset-4 hover:underline sm:max-w-[60px]"
+                      >
                         {response.name}
-                      </span>
+                      </Link>
                     </th>
                   ))}
                 </tr>
