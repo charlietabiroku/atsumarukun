@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 
 import { CandidateDateText } from "@/components/date/candidate-date-text";
-import { ResultsList } from "@/components/results/results-list";
 import { Card } from "@/components/ui/card";
 import { Link } from "@/lib/i18n/navigation";
 import { AppLocale } from "@/lib/i18n/routing";
@@ -65,12 +64,6 @@ export function OverallStatusPanel({
           </div>
         </Card>
       ) : null}
-
-      <ResultsList
-        results={payload.results}
-        locale={locale}
-        bestCandidateId={bestCandidate?.eventDateId}
-      />
 
       {payload.responses.length > 0 ? (
         <Card className="rounded-[24px] border border-border bg-white p-4">
