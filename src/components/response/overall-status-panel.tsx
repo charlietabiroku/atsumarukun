@@ -75,53 +75,57 @@ export function OverallStatusPanel({
           <div className="overflow-x-auto">
             <table className="min-w-fit table-fixed border-separate border-spacing-0 text-xs sm:text-sm">
               <colgroup>
-                <col className="w-[136px] sm:w-[156px]" />
-                {payload.responses.map((response) => (
-                  <col key={response.id} className="w-[54px] sm:w-[62px]" />
+                <col className="w-[104px] sm:w-[124px]" />
+                {payload.results.map((result) => (
+                  <col key={result.eventDateId} className="w-[108px] sm:w-[132px]" />
                 ))}
               </colgroup>
               <thead>
                 <tr>
                   <th className="sticky left-0 z-10 bg-white px-2 py-2 text-left font-semibold sm:px-2.5">
-                    {resultsT("date")}
+                    {resultsT("participants")}
                   </th>
-                  {payload.responses.map((response) => (
+                  {payload.results.map((result) => {
+                    const isBest = bestCandidate?.eventDateId === result.eventDateId;
+
+                    return (
+                      <th
+                        key={result.eventDateId}
+                        className={cn(
+                          "px-1 py-2 text-center font-semibold sm:px-1.5",
+                          isBest ? "bg-[#ECFDF3]" : "bg-white",
+                        )}
+                      >
+                        <span className="inline-block whitespace-nowrap text-[11px] sm:text-xs">
+                          <CandidateDateText value={result.candidateDate} locale={locale} />
+                        </span>
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {payload.responses.map((response) => (
+                  <tr key={response.id}>
                     <th
-                      key={response.id}
-                      className="bg-white px-1 py-2 text-center font-semibold sm:px-1.5"
+                      className="sticky left-0 z-10 bg-white px-2 py-2 text-left font-semibold sm:px-2.5"
                     >
                       <Link
                         href={`/e/${payload.event.slug}?responseId=${response.id}`}
-                        className="inline-block max-w-[52px] truncate rounded-full px-1 py-0.5 align-middle text-primary underline-offset-4 hover:underline sm:max-w-[60px]"
+                        className="inline-block max-w-[92px] truncate rounded-full px-1 py-0.5 align-middle text-primary underline-offset-4 hover:underline sm:max-w-[112px]"
                       >
                         {response.name}
                       </Link>
                     </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {payload.results.map((result) => {
-                  const isBest = bestCandidate?.eventDateId === result.eventDateId;
-
-                  return (
-                    <tr key={result.eventDateId}>
-                      <td
-                        className={cn(
-                          "sticky left-0 whitespace-nowrap px-2 py-2 font-semibold sm:px-2.5",
-                          isBest ? "bg-[#ECFDF3]" : "bg-white",
-                        )}
-                      >
-                        <CandidateDateText value={result.candidateDate} locale={locale} />
-                      </td>
-                      {payload.responses.map((response) => {
+                    {payload.results.map((result) => {
+                      const isBest = bestCandidate?.eventDateId === result.eventDateId;
                         const item = response.items.find(
                           (entry) => entry.eventDateId === result.eventDateId,
                         );
 
                         return (
                           <td
-                            key={`${result.eventDateId}-${response.id}`}
+                            key={`${response.id}-${result.eventDateId}`}
                             className={cn(
                               "px-1 py-2 text-center text-sm font-bold sm:px-1.5 sm:text-base",
                               isBest ? "bg-[#ECFDF3]" : "",
@@ -131,10 +135,9 @@ export function OverallStatusPanel({
                             {item ? responseSymbol[item.status] : "-"}
                           </td>
                         );
-                      })}
-                    </tr>
-                  );
-                })}
+                    })}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

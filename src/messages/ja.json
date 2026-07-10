@@ -113,6 +113,7 @@
     "responseTableHint": "回答者名を押すと、その回答を編集できます。",
     "responseTableOwnerHint": "自分の名前を押すと、自分の回答を編集できます。",
     "date": "日程",
+    "participants": "参加者",
     "responsesSummary": "{total}人中 {available}人が参加",
     "addToCalendar": "カレンダーに追加",
     "available": "参加",

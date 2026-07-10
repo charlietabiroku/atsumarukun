@@ -113,6 +113,7 @@
     "responseTableHint": "Tap a respondent name to edit that reply.",
     "responseTableOwnerHint": "Tap your name to edit your response.",
     "date": "Date",
+    "participants": "Participants",
     "responsesSummary": "{available} available out of {total}",
     "addToCalendar": "Add to calendar",
     "available": "Available",

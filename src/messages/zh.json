@@ -113,6 +113,7 @@
     "responseTableHint": "点击回答者姓名即可重新回答。",
     "responseTableOwnerHint": "点击自己的姓名即可修改自己的回答。",
     "date": "日期",
+    "participants": "参加者",
     "responsesSummary": "{total}人中有 {available} 人参加",
     "addToCalendar": "添加到日历",
     "available": "参加",
