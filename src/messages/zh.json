@@ -1,6 +1,7 @@
 {
   "common": {
     "language": "语言",
+    "menu": "菜单",
     "catchcopy": "聚会日期，很快决定。",
     "yourName": "你的名字",
     "localeNames": {

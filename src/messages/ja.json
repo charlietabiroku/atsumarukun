@@ -1,6 +1,7 @@
 {
   "common": {
     "language": "言語",
+    "menu": "メニュー",
     "catchcopy": "集まる日、すぐ決まる。",
     "yourName": "あなたの名前",
     "localeNames": {

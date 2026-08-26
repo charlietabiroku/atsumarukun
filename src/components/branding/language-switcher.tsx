@@ -1,11 +1,11 @@
 "use client";
 
-import { Languages } from "lucide-react";
+import { Languages, Menu } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { routing } from "@/lib/i18n/routing";
-import { usePathname, useRouter } from "@/lib/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/lib/i18n/navigation";
 
 export function LanguageSwitcher() {
   const t = useTranslations("common");
@@ -30,6 +30,15 @@ export function LanguageSwitcher() {
           {t(`localeNames.${nextLocale}`)}
         </Button>
       ))}
+      {pathname !== "/menu" ? (
+        <Link
+          href="/menu"
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-white px-4 text-xs font-semibold transition-colors hover:bg-muted"
+        >
+          <Menu className="size-4 text-primary" />
+          {t("menu")}
+        </Link>
+      ) : null}
     </div>
   );
 }
