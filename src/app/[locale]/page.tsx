@@ -49,9 +49,9 @@ export default async function TopPage({
                 </p>
               </div>
 
-              <Link href="/create" className="block">
+              <Link href="/menu" className="block">
                 <Button size="lg" className="w-full text-base">
-                  {t("cta")}
+                  {t("menuCta")}
                   <ArrowRight className="ml-2 size-4" />
                 </Button>
               </Link>

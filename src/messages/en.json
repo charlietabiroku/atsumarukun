@@ -14,6 +14,7 @@
     "headline": "Simple scheduling, built for phones.",
     "subcopy": "No login. Big buttons. Easy answers even when there are many candidate dates.",
     "cta": "Create Event",
+    "menuCta": "Open menu",
     "points": {
       "languagesTitle": "4 languages ready",
       "languagesBody": "Automatically supports Japanese, Chinese, English and Korean.",
@@ -22,6 +23,17 @@
       "noLoginTitle": "No login needed",
       "noLoginBody": "Just open the link and answer right away."
     }
+  },
+  "menu": {
+    "back": "Back to home",
+    "eyebrow": "Menu",
+    "headline": "What would you like to do?",
+    "subcopy": "Create or manage your events from one simple place.",
+    "createEvent": "Create a new event",
+    "createEventDescription": "Add candidate dates and share it right away.",
+    "admin": "Manage events",
+    "adminDescription": "Review and edit events and responses you created.",
+    "help": "No account is needed. Create an event, share its link, and collect replies."
   },
   "create": {
     "back": "Back",

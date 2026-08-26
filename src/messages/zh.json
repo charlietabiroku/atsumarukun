@@ -14,6 +14,7 @@
     "headline": "让日程协调更轻松。",
     "subcopy": "无需登录。按钮大，候选日期再多也能轻松回答。",
     "cta": "创建活动",
+    "menuCta": "打开菜单",
     "points": {
       "languagesTitle": "支持4种语言",
       "languagesBody": "自动支持日语、中文、英语、韩语。",
@@ -22,6 +23,17 @@
       "noLoginTitle": "无需登录",
       "noLoginBody": "打开链接后即可直接回答。"
     }
+  },
+  "menu": {
+    "back": "返回首页",
+    "eyebrow": "菜单",
+    "headline": "您想做什么？",
+    "subcopy": "从这里即可快速创建或管理活动。",
+    "createEvent": "创建新活动",
+    "createEventDescription": "输入候选日期和时间后即可立即分享。",
+    "admin": "管理活动",
+    "adminDescription": "查看和编辑已创建的活动与回答。",
+    "help": "无需注册。创建活动并分享链接，即可收集回答。"
   },
   "create": {
     "back": "返回",

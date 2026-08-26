@@ -14,6 +14,7 @@
     "headline": "日程調整を、もっと軽く。",
     "subcopy": "ログイン不要。大きなボタンで、候補日が多くても迷わず回答できます。",
     "cta": "イベントを作成",
+    "menuCta": "メニューを開く",
     "points": {
       "languagesTitle": "4言語に対応",
       "languagesBody": "日本語・中国語・英語・韓国語に自動対応。",
@@ -22,6 +23,17 @@
       "noLoginTitle": "ログイン不要",
       "noLoginBody": "URLを開くだけで、そのまま回答できます。"
     }
+  },
+  "menu": {
+    "back": "トップへ戻る",
+    "eyebrow": "メニュー",
+    "headline": "何をしますか？",
+    "subcopy": "イベントの作成や管理をここからすぐに始められます。",
+    "createEvent": "新しいイベントを作成",
+    "createEventDescription": "候補日時を入力して、すぐに共有できます。",
+    "admin": "イベントを管理",
+    "adminDescription": "作成したイベントや回答を確認・編集します。",
+    "help": "ログインなしでイベントを作成し、URLを共有するだけで回答を集められます。"
   },
   "create": {
     "back": "戻る",

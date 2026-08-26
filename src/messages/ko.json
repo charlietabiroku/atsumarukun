@@ -14,6 +14,7 @@
     "headline": "모바일에 딱 맞는 간단한 일정 조율.",
     "subcopy": "로그인 없이 큰 버튼으로, 후보 일정이 많아도 쉽게 답할 수 있어요.",
     "cta": "이벤트 만들기",
+    "menuCta": "메뉴 열기",
     "points": {
       "languagesTitle": "4개 언어 지원",
       "languagesBody": "일본어, 중국어, 영어, 한국어를 자동으로 지원합니다.",
@@ -22,6 +23,17 @@
       "noLoginTitle": "로그인 불필요",
       "noLoginBody": "링크만 열면 바로 답변할 수 있어요."
     }
+  },
+  "menu": {
+    "back": "홈으로 돌아가기",
+    "eyebrow": "메뉴",
+    "headline": "무엇을 하시겠어요?",
+    "subcopy": "이벤트를 만들거나 관리하는 일을 여기서 바로 시작할 수 있어요.",
+    "createEvent": "새 이벤트 만들기",
+    "createEventDescription": "후보 일정을 입력하고 바로 공유할 수 있어요.",
+    "admin": "이벤트 관리",
+    "adminDescription": "만든 이벤트와 응답을 확인하고 수정합니다.",
+    "help": "로그인은 필요 없어요. 이벤트를 만들고 링크를 공유해 응답을 모으세요."
   },
   "create": {
     "back": "뒤로",
