@@ -1,6 +1,6 @@
 "use client";
 
-import { Languages, Menu } from "lucide-react";
+import { Languages, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -30,13 +30,13 @@ export function LanguageSwitcher() {
           {t(`localeNames.${nextLocale}`)}
         </Button>
       ))}
-      {pathname !== "/menu" ? (
+      {pathname !== "/create" ? (
         <Link
-          href="/menu"
+          href="/create"
           className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-white px-4 text-xs font-semibold transition-colors hover:bg-muted"
         >
-          <Menu className="size-4 text-primary" />
-          {t("menu")}
+          <Plus className="size-4 text-primary" />
+          {t("createEvent")}
         </Link>
       ) : null}
     </div>

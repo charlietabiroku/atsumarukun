@@ -1,7 +1,7 @@
 {
   "common": {
     "language": "언어",
-    "menu": "메뉴",
+    "createEvent": "새 이벤트 만들기",
     "catchcopy": "모이는 날, 바로 정해져요.",
     "yourName": "이름",
     "localeNames": {

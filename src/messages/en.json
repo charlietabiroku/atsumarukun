@@ -1,7 +1,7 @@
 {
   "common": {
     "language": "Language",
-    "menu": "Menu",
+    "createEvent": "Create event",
     "catchcopy": "Pick the day fast.",
     "yourName": "Your name",
     "localeNames": {

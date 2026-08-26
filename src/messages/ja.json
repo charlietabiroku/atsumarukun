@@ -1,7 +1,7 @@
 {
   "common": {
     "language": "言語",
-    "menu": "メニュー",
+    "createEvent": "新しいイベントを作成",
     "catchcopy": "集まる日、すぐ決まる。",
     "yourName": "あなたの名前",
     "localeNames": {
