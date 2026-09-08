@@ -93,6 +93,17 @@
     }
   },
   "response": {
+    "eventViews": "이벤트 보기 전환",
+    "answerTab": "응답하기",
+    "everyoneTab": "모두의 응답",
+    "candidateCount": "후보 일정 {count}개",
+    "selectionHint": "○ 참석 · △ 미정 · × 불참",
+    "nameRequired": "이름을 입력해 주세요",
+    "saveHint": "제출하면 변경 사항이 저장됩니다",
+    "sendResponse": "응답 제출",
+    "saveChanges": "변경 사항 저장",
+    "responseSaved": "응답이 저장되었습니다",
+    "noResponses": "아직 응답이 없습니다. 응답이 모이면 여기에 표시됩니다.",
     "headline": "응답",
     "namePlaceholder": "예) 홍길동",
     "allAvailable": "전 일정 참석",

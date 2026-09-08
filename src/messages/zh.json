@@ -93,6 +93,17 @@
     }
   },
   "response": {
+    "eventViews": "切换活动视图",
+    "answerTab": "填写回答",
+    "everyoneTab": "大家的回答",
+    "candidateCount": "候选日期 {count}个",
+    "selectionHint": "○ 参加 · △ 待定 · × 不参加",
+    "nameRequired": "请先填写姓名",
+    "saveHint": "提交后才会保存修改",
+    "sendResponse": "提交回答",
+    "saveChanges": "保存修改",
+    "responseSaved": "回答已保存",
+    "noResponses": "还没有人回答。收到回答后，将在这里显示回答列表。",
     "headline": "回答",
     "namePlaceholder": "例如：张三",
     "allAvailable": "全部都能参加",

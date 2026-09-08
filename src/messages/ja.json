@@ -93,6 +93,17 @@
     }
   },
   "response": {
+    "eventViews": "イベントの表示切り替え",
+    "answerTab": "回答する",
+    "everyoneTab": "みんなの回答",
+    "candidateCount": "候補日 {count}件",
+    "selectionHint": "○ 参加 · △ 未定 · × 不参加",
+    "nameRequired": "名前を入力してください",
+    "saveHint": "送信するまで変更は保存されません",
+    "sendResponse": "回答を送信",
+    "saveChanges": "変更を保存",
+    "responseSaved": "回答を保存しました",
+    "noResponses": "まだ回答がありません。回答が集まると、ここに一覧が表示されます。",
     "headline": "回答画面",
     "namePlaceholder": "例）山田太郎",
     "allAvailable": "全日程参加",

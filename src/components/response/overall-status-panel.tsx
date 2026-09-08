@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 
 import { CandidateDateText } from "@/components/date/candidate-date-text";
-import { Card } from "@/components/ui/card";
 import { Link } from "@/lib/i18n/navigation";
 import { AppLocale } from "@/lib/i18n/routing";
 import { cn } from "@/lib/utils";
@@ -24,29 +23,38 @@ const responseSymbolClass = {
 export function OverallStatusPanel({
   locale,
   payload,
+  onEditResponse,
 }: {
   locale: AppLocale;
   payload: EventResultsPayload;
+  onEditResponse?: () => void;
 }) {
   const t = useTranslations("response");
   const resultsT = useTranslations("results");
-  const bestCandidate = payload.bestCandidates[0] ?? null;
+  const bestCandidate =
+    payload.responses.length > 0 ? (payload.bestCandidates[0] ?? null) : null;
 
   return (
-    <div className="space-y-4">
+    <div className="min-w-0 space-y-4">
       <div className="space-y-1">
         <h2 className="text-lg font-extrabold">{t("overallStatus")}</h2>
         <p className="text-sm text-foreground/60">
-          {resultsT("responseRate")} {payload.responseRate.answered} / {payload.responseRate.total}
+          {resultsT("responseRate")} {payload.responseRate.answered} /{" "}
+          {payload.responseRate.total}
           {resultsT("peopleSuffix")} ({payload.responseRate.percentage}%)
         </p>
       </div>
 
       {bestCandidate ? (
-        <Card className="rounded-[24px] border border-[#34C759] bg-[#ECFDF3] p-4">
-          <p className="text-sm font-semibold text-primary">{resultsT("bestCandidate")}</p>
+        <div className="rounded-[24px] border border-[#34C759] bg-[#ECFDF3] p-4">
+          <p className="text-sm font-semibold text-primary">
+            {resultsT("bestCandidate")}
+          </p>
           <p className="mt-2 text-lg font-extrabold text-foreground">
-            <CandidateDateText value={bestCandidate.candidateDate} locale={locale} />
+            <CandidateDateText
+              value={bestCandidate.candidateDate}
+              locale={locale}
+            />
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-sm font-semibold">
             <span className="rounded-full bg-white px-3 py-1 text-primary">
@@ -62,14 +70,22 @@ export function OverallStatusPanel({
               {resultsT("peopleSuffix")}
             </span>
           </div>
-        </Card>
+        </div>
       ) : null}
 
-      {payload.responses.length > 0 ? (
-        <Card className="rounded-[24px] border border-border bg-white p-4">
+      {payload.responses.length === 0 ? (
+        <p className="rounded-2xl bg-muted p-4 text-sm leading-6 text-foreground/65">
+          {t("noResponses")}
+        </p>
+      ) : (
+        <div className="rounded-[24px] border border-border bg-white p-4">
           <div className="mb-3 space-y-1">
-            <h3 className="text-base font-extrabold">{resultsT("responseTable")}</h3>
-            <p className="text-sm text-foreground/60">{resultsT("responseTableHint")}</p>
+            <h3 className="text-base font-extrabold">
+              {resultsT("responseTable")}
+            </h3>
+            <p className="text-sm text-foreground/60">
+              {resultsT("responseTableHint")}
+            </p>
           </div>
 
           <div className="overflow-x-auto">
@@ -77,7 +93,10 @@ export function OverallStatusPanel({
               <colgroup>
                 <col className="w-[104px] sm:w-[124px]" />
                 {payload.results.map((result) => (
-                  <col key={result.eventDateId} className="w-[108px] sm:w-[132px]" />
+                  <col
+                    key={result.eventDateId}
+                    className="w-[108px] sm:w-[132px]"
+                  />
                 ))}
               </colgroup>
               <thead>
@@ -86,7 +105,8 @@ export function OverallStatusPanel({
                     {resultsT("participants")}
                   </th>
                   {payload.results.map((result) => {
-                    const isBest = bestCandidate?.eventDateId === result.eventDateId;
+                    const isBest =
+                      bestCandidate?.eventDateId === result.eventDateId;
 
                     return (
                       <th
@@ -97,7 +117,10 @@ export function OverallStatusPanel({
                         )}
                       >
                         <span className="inline-block whitespace-nowrap text-[11px] sm:text-xs">
-                          <CandidateDateText value={result.candidateDate} locale={locale} />
+                          <CandidateDateText
+                            value={result.candidateDate}
+                            locale={locale}
+                          />
                         </span>
                       </th>
                     );
@@ -107,42 +130,44 @@ export function OverallStatusPanel({
               <tbody>
                 {payload.responses.map((response) => (
                   <tr key={response.id}>
-                    <th
-                      className="sticky left-0 z-10 bg-white px-2 py-2 text-left font-semibold sm:px-2.5"
-                    >
+                    <th className="sticky left-0 z-10 bg-white px-2 py-2 text-left font-semibold sm:px-2.5">
                       <Link
                         href={`/e/${payload.event.slug}?responseId=${response.id}`}
+                        onNavigate={onEditResponse}
                         className="inline-block max-w-[92px] truncate rounded-full px-1 py-0.5 align-middle text-primary underline-offset-4 hover:underline sm:max-w-[112px]"
                       >
                         {response.name}
                       </Link>
                     </th>
                     {payload.results.map((result) => {
-                      const isBest = bestCandidate?.eventDateId === result.eventDateId;
-                        const item = response.items.find(
-                          (entry) => entry.eventDateId === result.eventDateId,
-                        );
+                      const isBest =
+                        bestCandidate?.eventDateId === result.eventDateId;
+                      const item = response.items.find(
+                        (entry) => entry.eventDateId === result.eventDateId,
+                      );
 
-                        return (
-                          <td
-                            key={`${response.id}-${result.eventDateId}`}
-                            className={cn(
-                              "px-1 py-2 text-center text-sm font-bold sm:px-1.5 sm:text-base",
-                              isBest ? "bg-[#ECFDF3]" : "",
-                              item ? responseSymbolClass[item.status] : "text-foreground/30",
-                            )}
-                          >
-                            {item ? responseSymbol[item.status] : "-"}
-                          </td>
-                        );
+                      return (
+                        <td
+                          key={`${response.id}-${result.eventDateId}`}
+                          className={cn(
+                            "px-1 py-2 text-center text-sm font-bold sm:px-1.5 sm:text-base",
+                            isBest ? "bg-[#ECFDF3]" : "",
+                            item
+                              ? responseSymbolClass[item.status]
+                              : "text-foreground/30",
+                          )}
+                        >
+                          {item ? responseSymbol[item.status] : "-"}
+                        </td>
+                      );
                     })}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </Card>
-      ) : null}
+        </div>
+      )}
     </div>
   );
 }

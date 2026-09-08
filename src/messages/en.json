@@ -93,6 +93,17 @@
     }
   },
   "response": {
+    "eventViews": "Event views",
+    "answerTab": "Respond",
+    "everyoneTab": "Everyone's replies",
+    "candidateCount": "{count, plural, one {# date} other {# dates}}",
+    "selectionHint": "○ Yes · △ Maybe · × No",
+    "nameRequired": "Enter your name to continue",
+    "saveHint": "Changes are saved when you submit",
+    "sendResponse": "Submit reply",
+    "saveChanges": "Save changes",
+    "responseSaved": "Response saved",
+    "noResponses": "No replies yet. Responses will appear here as they arrive.",
     "headline": "Reply",
     "namePlaceholder": "Ex. Alex",
     "allAvailable": "Available for all",

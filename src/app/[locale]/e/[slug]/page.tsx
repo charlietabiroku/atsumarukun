@@ -15,10 +15,15 @@ export default async function EventPage({
   searchParams,
 }: {
   params: Promise<{ locale: "ja" | "zh" | "en" | "ko"; slug: string }>;
-  searchParams: Promise<{ responseId?: string; updated?: string }>;
+  searchParams: Promise<{
+    responseId?: string;
+    updated?: string;
+    saved?: string;
+    view?: string;
+  }>;
 }) {
   const { locale, slug } = await params;
-  const { responseId, updated } = await searchParams;
+  const { responseId, updated, saved, view } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("response");
   const event = await getEventBySlug(slug);
@@ -54,12 +59,18 @@ export default async function EventPage({
           <LanguageSwitcher />
         </div>
 
-        <Card className="mx-auto w-full max-w-2xl p-5 sm:p-7">
-          <div className="mb-6 space-y-2">
-            <p className="text-sm font-semibold text-primary">{t("headline")}</p>
-            <h1 className="text-3xl font-extrabold">{event.title}</h1>
+        <Card className="mx-auto w-full min-w-0 max-w-2xl p-4 sm:p-7">
+          <div className="mb-5 space-y-2">
+            <p className="text-sm font-semibold text-primary">
+              {t("headline")}
+            </p>
+            <h1 className="break-words text-2xl font-extrabold sm:text-3xl">
+              {event.title}
+            </h1>
             {event.description ? (
-              <p className="text-sm leading-6 text-foreground/65">{event.description}</p>
+              <p className="text-sm leading-6 text-foreground/65">
+                {event.description}
+              </p>
             ) : null}
           </div>
           <ResponseForm
@@ -68,6 +79,10 @@ export default async function EventPage({
             overallStatus={overallStatus}
             requestedResponseId={responseId}
             justUpdated={updated === "1"}
+            justSaved={saved === "1" || updated === "1"}
+            initialView={
+              view === "overview" || !isSubmissionOpen ? "overview" : "response"
+            }
             isSubmissionOpen={isSubmissionOpen}
             submissionNotice={submissionNotice}
           />
